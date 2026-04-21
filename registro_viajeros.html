@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Registro de Viajeros · Maiquez 18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b3a5c;--blue:#2563a8;--light:#e8f1fb;--accent:#c8a84b;
+  --bg:#f5f7fa;--wh:#fff;--tx:#1a2d42;--tm:#6b7f96;--br:#d0dce8;
+  --gn:#1a7a50;--rd:#c0392b;--ra:12px;--rs:8px;
+  --sh:0 2px 16px rgba(27,58,92,.10);--sl:0 8px 40px rgba(27,58,92,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:40px}
+
+/* HEADER */
+.header{background:var(--navy);padding:22px 20px 18px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(200,168,75,.06) 0,rgba(200,168,75,.06) 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.header-inner{position:relative;z-index:1}
+.logo-line{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand{font-family:'Playfair Display',serif;font-size:1.25rem;color:#fff;letter-spacing:.02em}
+.tagline{font-size:.72rem;color:rgba(200,168,75,.9);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.header-badge{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:30px;padding:6px 16px;display:inline-flex;align-items:center;gap:7px;font-size:.75rem;color:rgba(255,255,255,.85)}
+.badge-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+
+/* PROGRESS */
+.progress-wrap{padding:14px 20px 0;max-width:520px;margin:0 auto}
+.progress-bar{height:4px;background:var(--br);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:4px;transition:width .4s ease;width:0%}
+.progress-label{font-size:.71rem;color:var(--tm);text-align:right}
+
+/* FORM CARD */
+.card{background:var(--wh);border-radius:var(--ra);box-shadow:var(--sh);margin:14px auto 0;max-width:520px;overflow:hidden}
+.section-head{background:var(--navy);padding:10px 18px;display:flex;align-items:center;gap:9px}
+.section-num{width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--navy);flex-shrink:0}
+.section-title{font-family:'Playfair Display',serif;font-size:.92rem;color:#fff}
+.section-body{padding:16px}
+
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.69rem;font-weight:600;color:var(--tm);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:.92rem;border:1.5px solid var(--br);border-radius:var(--rs);padding:11px 13px;color:var(--tx);background:var(--wh);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,168,.10)}
+.field input.error,.field select.error{border-color:var(--rd);box-shadow:0 0 0 3px rgba(192,57,43,.08)}
+.field textarea{resize:none;min-height:64px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+.field-hint{font-size:.68rem;color:var(--tm);margin-top:4px}
+.field-err{font-size:.68rem;color:var(--rd);margin-top:4px;display:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* PRE-FILLED INFO BOX */
+.info-box{background:var(--light);border-radius:var(--rs);padding:12px 14px;margin-bottom:14px;border-left:3px solid var(--blue)}
+.info-box-title{font-size:.67rem;font-weight:700;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.info-row{display:flex;justify-content:space-between;font-size:.8rem;padding:2px 0}
+.info-label{color:var(--tm)}
+.info-value{font-weight:600;color:var(--navy);text-align:right}
+
+/* SIGNATURE */
+.sig-wrap{margin-bottom:14px}
+.sig-label{font-size:.69rem;font-weight:600;color:var(--tm);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.sig-clear{font-size:.72rem;color:var(--blue);font-weight:500;cursor:pointer;text-transform:none;letter-spacing:0;background:none;border:none;padding:2px 6px;border-radius:4px;transition:background .13s}
+.sig-clear:hover{background:var(--light)}
+.sig-canvas-wrap{border:2px dashed var(--br);border-radius:var(--rs);background:#fafcff;overflow:hidden;position:relative;transition:border-color .15s}
+.sig-canvas-wrap.has-sig{border-color:var(--blue);border-style:solid}
+.sig-canvas-wrap.error{border-color:var(--rd)}
+canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height:130px}
+.sig-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .2s}
+.sig-hint-inner{text-align:center;color:var(--tm)}
+.sig-hint-icon{font-size:1.6rem;margin-bottom:4px}
+.sig-hint-text{font-size:.75rem}
+
+/* LEGAL */
+.legal-box{background:#fffbf0;border:1px solid #e8d5a0;border-radius:var(--rs);padding:12px 14px;margin-bottom:14px}
+.legal-box p{font-size:.75rem;color:#6b5a2a;line-height:1.55}
+.legal-box strong{color:#4a3a10}
+
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.check-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:var(--blue);cursor:pointer;margin-top:1px}
+.check-row label{font-size:.8rem;color:var(--tx);line-height:1.5;cursor:pointer}
+.check-row label.error-text{color:var(--rd)}
+
+/* SUBMIT */
+.submit-wrap{padding:0 0 4px;max-width:520px;margin:0 auto}
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;border:none;border-radius:var(--ra);padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(37,99,168,.35);transition:all .18s;letter-spacing:.02em}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(37,99,168,.45)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-submit .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:50px 24px;max-width:520px;margin:0 auto}
+.success-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--gn),#2ecc71);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,122,80,.30)}
+.success-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:10px}
+.success-msg{font-size:.88rem;color:var(--tm);line-height:1.65;max-width:340px;margin:0 auto}
+
+/* PADDING SECTIONS */
+.pad{padding:0 20px}
+.mt{margin-top:14px}
+
+@media(max-width:420px){
+  .row2{grid-template-columns:1fr}
+  .row3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-line">
+      <div class="logo-icon">🏠</div>
+      <div class="brand">Maiquez 18</div>
+    </div>
+    <div class="tagline">Registro de Viajeros · Madrid</div>
+    <div class="header-badge">
+      <span class="badge-dot"></span>
+      Formulario oficial · RD 933/2021
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap pad">
+  <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+  <div class="progress-label" id="pLabel">Rellena todos los campos</div>
+</div>
+
+<form id="regForm" style="max-width:520px;margin:0 auto;padding:0 0 18px">
+
+  <!-- HIDDEN FIELDS FOR FORMSUBMIT -->
+  <input type="hidden" name="_subject" value="✅ Nuevo Registro de Viajero — Maiquez 18">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="about:blank">
+  <input type="hidden" name="firma_imagen" id="firmaHidden">
+  <input type="hidden" name="titular_nombre" value="Gonzalo Arroyo Fernández">
+  <input type="hidden" name="titular_doc" value="DNI 05231837-G">
+  <input type="hidden" name="inmueble_dir" value="Calle Maiquez, 18 · 28009 Madrid">
+
+  <!-- SECCIÓN 1: INMUEBLE (info, no editable) -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">Datos del Inmueble</div>
+    </div>
+    <div class="section-body">
+      <div class="info-box">
+        <div class="info-box-title">Alojamiento · Accommodation</div>
+        <div class="info-row"><span class="info-label">Dirección · Address</span><span class="info-value">Calle Maiquez, 18 · 28009 Madrid</span></div>
+        <div class="info-row"><span class="info-label">Titular · Owner</span><span class="info-value">Gonzalo Arroyo Fernández</span></div>
+        <div class="info-row"><span class="info-label">Teléfono · Phone</span><span class="info-value">+34 644 30 51 41</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value">alquilerm18@gmail.com</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: DATOS DEL VIAJERO -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div class="section-title">Tus datos personales · Your personal details</div>
+    </div>
+    <div class="section-body">
+
+      <div class="row2">
+        <div class="field">
+          <label>Nombre · First name *</label>
+          <input type="text" name="nombre" id="f_nombre" placeholder="María" autocomplete="given-name" required>
+          <div class="field-err" id="e_nombre">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Primer apellido · Surname *</label>
+          <input type="text" name="primer_apellido" id="f_ap1" placeholder="García" autocomplete="family-name" required>
+          <div class="field-err" id="e_ap1">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Segundo apellido · 2nd surname</label>
+          <input type="text" name="segundo_apellido" placeholder="López" autocomplete="additional-name">
+        </div>
+        <div class="field">
+          <label>Sexo · Gender *</label>
+          <select name="sexo" id="f_sexo" required>
+            <option value="">— Selecciona —</option>
+            <option value="H">H — Hombre / Male</option>
+            <option value="M">M — Mujer / Female</option>
+            <option value="X">X — No binario / Non-binary</option>
+          </select>
+          <div class="field-err" id="e_sexo">Selecciona una opción</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Tipo de documento *</label>
+          <select name="tipo_documento" id="f_tdoc" required>
+            <option value="">— Tipo —</option>
+            <option value="DNI">DNI</option>
+            <option value="Pasaporte">Pasaporte / Passport</option>
+            <option value="TIE">TIE</option>
+            <option value="Carta de identidad">Carta de identidad / ID Card</option>
+          </select>
+          <div class="field-err" id="e_tdoc">Selecciona una opción</div>
+        </div>
+        <div class="field">
+          <label>Nº documento · Doc. number *</label>
+          <input type="text" name="numero_documento" id="f_doc" placeholder="AB1234567" autocomplete="off" required>
+          <div class="field-err" id="e_doc">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Nacionalidad · Nationality *</label>
+          <input type="text" name="nacionalidad" id="f_nac" placeholder="España / France…" required>
+          <div class="field-err" id="e_nac">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Fecha nacimiento · Date of birth *</label>
+          <input type="text" name="fecha_nacimiento" id="f_fnac" placeholder="DD-MM-AAAA" pattern="\d{2}-\d{2}-\d{4}" required>
+          <div class="field-err" id="e_fnac">Formato DD-MM-AAAA</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Lugar de residencia habitual · Place of residence *</label>
+        <input type="text" name="residencia" id="f_res" placeholder="Ciudad, País" required>
+        <div class="field-err" id="e_res">Campo obligatorio</div>
+      </div>
+
+      <div class="field">
+        <label>Dirección completa · Full address *</label>
+        <input type="text" name="direccion" id="f_dir" placeholder="Calle, número, piso…" autocomplete="street-address" required>
+        <div class="field-err" id="e_dir">Campo obligatorio</div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label>Localidad · City *</label>
+          <input type="text" name="localidad" id="f_loc" placeholder="Madrid" required>
+          <div class="field-err" id="e_loc">Obligatorio</div>
+        </div>
+        <div class="field">
+          <label>País · Country *</label>
+          <input type="text" name="pais" id="f_pais" placeholder="España" required>
+          <div class="field-err" id="e_pais">Obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Nº viajeros</label>
+          <select name="num_viajeros">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Teléfono móvil · Mobile</label>
+          <input type="tel" name="telefono_movil" placeholder="+34 6xx xxx xxx" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" name="email_viajero" id="f_email" placeholder="tu@email.com" autocomplete="email" required>
+          <div class="field-err" id="e_email">Email no válido</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Parentesco entre viajeros (si hay menores)</label>
+        <input type="text" name="parentesco" placeholder="Opcional · padre/hijo…">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: DATOS DE LA ESTANCIA -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div class="section-title">Datos de la estancia · Stay details</div>
+    </div>
+    <div class="section-body">
+
+      <div class="row2">
+        <div class="field">
+          <label>Fecha de entrada · Check-in *</label>
+          <input type="text" name="fecha_entrada" id="f_fent" placeholder="DD-MM-AAAA HH:MM" required>
+          <div class="field-err" id="e_fent">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Fecha de salida · Check-out *</label>
+          <input type="text" name="fecha_salida" id="f_fsal" placeholder="DD-MM-AAAA HH:MM" required>
+          <div class="field-err" id="e_fsal">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Nº de referencia · Airbnb code</label>
+          <input type="text" name="referencia" placeholder="HM…">
+        </div>
+        <div class="field">
+          <label>Tipo de pago · Payment</label>
+          <select name="tipo_pago">
+            <option value="Airbnb (plataforma)">Airbnb</option>
+            <option value="Transferencia">Transferencia / Transfer</option>
+            <option value="Tarjeta">Tarjeta / Card</option>
+            <option value="Efectivo">Efectivo / Cash</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: FIRMA -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div class="section-title">Tu firma · Your signature</div>
+    </div>
+    <div class="section-body">
+
+      <p style="font-size:.78rem;color:var(--tm);margin-bottom:12px;line-height:1.55">
+        Firma en el recuadro de abajo con tu dedo o stylus.<br>
+        <em>Sign in the box below with your finger or stylus.</em>
+      </p>
+
+      <div class="sig-wrap">
+        <div class="sig-label">
+          <span>Firma del viajero · Traveller signature *</span>
+          <button type="button" class="sig-clear" onclick="clearSig()">✕ Borrar</button>
+        </div>
+        <div class="sig-canvas-wrap" id="sigWrap">
+          <canvas id="sigPad"></canvas>
+          <div class="sig-hint" id="sigHint">
+            <div class="sig-hint-inner">
+              <div class="sig-hint-icon">✍️</div>
+              <div class="sig-hint-text">Firma aquí · Sign here</div>
+            </div>
+          </div>
+        </div>
+        <div class="field-err" id="e_sig" style="display:none">La firma es obligatoria</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: RGPD + CONSENTIMIENTO -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title">Consentimiento · Consent</div>
+    </div>
+    <div class="section-body">
+
+      <div class="legal-box">
+        <p><strong>Información sobre protección de datos (RGPD)</strong><br>
+        Los datos facilitados son necesarios para el cumplimiento del <strong>Real Decreto 933/2021</strong> sobre registro de viajeros en establecimientos de hospedaje. Serán tratados por el titular del alojamiento y comunicados a las autoridades competentes (Ministerio del Interior). No serán cedidos a terceros con fines comerciales. Puede ejercer sus derechos en <strong>alquilerm18@gmail.com</strong>.<br><br>
+        <em>Data collected under RD 933/2021 for traveller registration purposes only.</em></p>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="chkRgpd" name="acepto_rgpd" value="Sí" required>
+        <label for="chkRgpd" id="lbl_rgpd">He leído y acepto el tratamiento de mis datos conforme al RGPD (UE) 2016/679. · <em>I have read and accept the data processing under GDPR.</em></label>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="chkVer" name="datos_verificados" value="Sí" required>
+        <label for="chkVer" id="lbl_ver">Confirmo que los datos facilitados son correctos y verídicos. · <em>I confirm that the information provided is accurate.</em></label>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="mt pad" style="padding-top:20px">
+    <button type="submit" class="btn-submit" id="btnSubmit">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">📤 Enviar registro firmado</span>
+    </button>
+    <p style="font-size:.7rem;color:var(--tm);text-align:center;margin-top:10px">
+      Recibirás una copia en tu email · You will receive a copy by email
+    </p>
+  </div>
+
+</form>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">¡Registro enviado!</div>
+  <p class="success-msg">
+    Gracias. Tu registro de viajero ha sido enviado correctamente y el titular del alojamiento lo recibirá en breve.<br><br>
+    <em>Thank you. Your traveller registration has been successfully submitted.</em><br><br>
+    <strong>Maiquez 18 · Madrid</strong>
+  </p>
+</div>
+
+<script>
+// ── CANVAS SIGNATURE ──
+const canvas = document.getElementById('sigPad');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('sigWrap');
+const hint = document.getElementById('sigHint');
+let drawing = false, hasSig = false;
+
+function resizeCanvas(){
+  const rect = wrap.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = 130 * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = '130px';
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#1b3a5c';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return {x: src.clientX - rect.left, y: src.clientY - rect.top};
+}
+
+canvas.addEventListener('mousedown', e=>{drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);});
+canvas.addEventListener('mousemove', e=>{if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); startedSig();});
+canvas.addEventListener('mouseup', ()=>drawing=false);
+canvas.addEventListener('touchstart', e=>{e.preventDefault(); drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault(); if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); startedSig();},{passive:false});
+canvas.addEventListener('touchend', ()=>drawing=false);
+
+function startedSig(){
+  if(!hasSig){
+    hasSig=true;
+    hint.style.opacity='0';
+    wrap.classList.add('has-sig');
+    wrap.classList.remove('error');
+    document.getElementById('e_sig').style.display='none';
+  }
+}
+function clearSig(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hasSig=false;
+  hint.style.opacity='1';
+  wrap.classList.remove('has-sig');
+}
+
+// ── PROGRESS ──
+const requiredIds=['f_nombre','f_ap1','f_sexo','f_tdoc','f_doc','f_nac','f_fnac','f_res','f_dir','f_loc','f_pais','f_email','f_fent','f_fsal'];
+function updateProgress(){
+  let filled=0;
+  requiredIds.forEach(id=>{const el=document.getElementById(id);if(el&&el.value.trim())filled++;});
+  if(hasSig)filled++;
+  if(document.getElementById('chkRgpd').checked)filled++;
+  if(document.getElementById('chkVer').checked)filled++;
+  const total=requiredIds.length+3;
+  const pct=Math.round((filled/total)*100);
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pLabel').textContent=pct===100?'✓ Listo para enviar':`${pct}% completado`;
+}
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',updateProgress));
+document.querySelectorAll('input[type=checkbox]').forEach(el=>el.addEventListener('change',updateProgress));
+
+// ── VALIDATION ──
+function validateField(id, errId, check){
+  const el=document.getElementById(id);
+  const er=document.getElementById(errId);
+  if(!el||!er)return true;
+  const ok=check(el.value.trim());
+  el.classList.toggle('error',!ok);
+  er.style.display=ok?'none':'block';
+  return ok;
+}
+function validateAll(){
+  let ok=true;
+  const req=[
+    ['f_nombre','e_nombre',v=>v.length>0],
+    ['f_ap1','e_ap1',v=>v.length>0],
+    ['f_sexo','e_sexo',v=>v.length>0],
+    ['f_tdoc','e_tdoc',v=>v.length>0],
+    ['f_doc','e_doc',v=>v.length>0],
+    ['f_nac','e_nac',v=>v.length>0],
+    ['f_fnac','e_fnac',v=>/^\d{2}-\d{2}-\d{4}$/.test(v)],
+    ['f_res','e_res',v=>v.length>0],
+    ['f_dir','e_dir',v=>v.length>0],
+    ['f_loc','e_loc',v=>v.length>0],
+    ['f_pais','e_pais',v=>v.length>0],
+    ['f_email','e_email',v=>/^[^@]+@[^@]+\.[^@]+$/.test(v)],
+    ['f_fent','e_fent',v=>v.length>0],
+    ['f_fsal','e_fsal',v=>v.length>0],
+  ];
+  req.forEach(([id,er,fn])=>{ if(!validateField(id,er,fn))ok=false; });
+  // Signature
+  if(!hasSig){
+    wrap.classList.add('error');
+    document.getElementById('e_sig').style.display='block';
+    ok=false;
+  }
+  // Checkboxes
+  ['chkRgpd','chkVer'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    const lbl=document.getElementById(i===0?'lbl_rgpd':'lbl_ver');
+    if(!el.checked){lbl.classList.add('error-text');ok=false;}
+    else lbl.classList.remove('error-text');
+  });
+  return ok;
+}
+
+// ── SUBMIT ──
+document.getElementById('regForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(!validateAll()){
+    document.querySelector('.error, .error-text, [id^=e_]:not([style*="none"])')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  // Save signature as base64
+  document.getElementById('firmaHidden').value = canvas.toDataURL('image/png');
+
+  const btn=document.getElementById('btnSubmit');
+  const sp=document.getElementById('spinner');
+  const bt=document.getElementById('btnText');
+  btn.disabled=true; sp.style.display='block'; bt.textContent='Enviando…';
+
+  // Build form data
+  const fd = new FormData(this);
+  // Add date/time stamp
+  fd.append('fecha_envio', new Date().toLocaleString('es-ES'));
+
+  try{
+    // IMPORTANT: Replace YOUR_EMAIL below with your actual email
+    const res = await fetch('https://formsubmit.co/ajax/alquilerm18@gmail.com', {
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:fd
+    });
+    const json = await res.json();
+    if(json.success==='true'||json.success===true){
+      document.getElementById('regForm').style.display='none';
+      document.getElementById('successScreen').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }else{
+      throw new Error('FormSubmit error');
+    }
+  }catch(err){
+    btn.disabled=false; sp.style.display='none'; bt.textContent='📤 Enviar registro firmado';
+    alert('❌ Error al enviar. Por favor, comprueba tu conexión e inténtalo de nuevo.\n\nIf error persists, please take a screenshot and contact: +34 644 30 51 41');
+  }
+});
+
+updateProgress();
+</script>
+</body>
+</html>
