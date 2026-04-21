@@ -139,7 +139,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
   <input type="hidden" name="_template" value="table">
   <input type="hidden" name="_captcha" value="false">
   <input type="hidden" name="_next" value="about:blank">
-  <input type="hidden" name="firma_imagen" id="firmaHidden">
+  <input type="hidden" name="firma_digital" id="firmaHidden" value="">
   <input type="hidden" name="titular_nombre" value="Gonzalo Arroyo Fernández">
   <input type="hidden" name="titular_doc" value="DNI 05231837-G">
   <input type="hidden" name="inmueble_dir" value="Calle Maiquez, 18 · 28009 Madrid">
@@ -172,12 +172,12 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
       <div class="row2">
         <div class="field">
           <label>Nombre · First name *</label>
-          <input type="text" name="nombre" id="f_nombre" placeholder="María" autocomplete="given-name" required>
+          <input type="text" name="nombre" id="f_nombre" placeholder="" autocomplete="given-name" required>
           <div class="field-err" id="e_nombre">Campo obligatorio</div>
         </div>
         <div class="field">
           <label>Primer apellido · Surname *</label>
-          <input type="text" name="primer_apellido" id="f_ap1" placeholder="García" autocomplete="family-name" required>
+          <input type="text" name="primer_apellido" id="f_ap1" placeholder="" autocomplete="family-name" required>
           <div class="field-err" id="e_ap1">Campo obligatorio</div>
         </div>
       </div>
@@ -185,7 +185,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
       <div class="row2">
         <div class="field">
           <label>Segundo apellido · 2nd surname</label>
-          <input type="text" name="segundo_apellido" placeholder="López" autocomplete="additional-name">
+          <input type="text" name="segundo_apellido" placeholder="" autocomplete="additional-name">
         </div>
         <div class="field">
           <label>Sexo · Gender *</label>
@@ -213,7 +213,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
         </div>
         <div class="field">
           <label>Nº documento · Doc. number *</label>
-          <input type="text" name="numero_documento" id="f_doc" placeholder="AB1234567" autocomplete="off" required>
+          <input type="text" name="numero_documento" id="f_doc" placeholder="" autocomplete="off" required>
           <div class="field-err" id="e_doc">Campo obligatorio</div>
         </div>
       </div>
@@ -221,7 +221,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
       <div class="row2">
         <div class="field">
           <label>Nacionalidad · Nationality *</label>
-          <input type="text" name="nacionalidad" id="f_nac" placeholder="España / France…" required>
+          <input type="text" name="nacionalidad" id="f_nac" placeholder="" required>
           <div class="field-err" id="e_nac">Campo obligatorio</div>
         </div>
         <div class="field">
@@ -233,25 +233,25 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
 
       <div class="field">
         <label>Lugar de residencia habitual · Place of residence *</label>
-        <input type="text" name="residencia" id="f_res" placeholder="Ciudad, País" required>
+        <input type="text" name="residencia" id="f_res" placeholder="" required>
         <div class="field-err" id="e_res">Campo obligatorio</div>
       </div>
 
       <div class="field">
         <label>Dirección completa · Full address *</label>
-        <input type="text" name="direccion" id="f_dir" placeholder="Calle, número, piso…" autocomplete="street-address" required>
+        <input type="text" name="direccion" id="f_dir" placeholder="" autocomplete="street-address" required>
         <div class="field-err" id="e_dir">Campo obligatorio</div>
       </div>
 
       <div class="row3">
         <div class="field">
           <label>Localidad · City *</label>
-          <input type="text" name="localidad" id="f_loc" placeholder="Madrid" required>
+          <input type="text" name="localidad" id="f_loc"  required>
           <div class="field-err" id="e_loc">Obligatorio</div>
         </div>
         <div class="field">
           <label>País · Country *</label>
-          <input type="text" name="pais" id="f_pais" placeholder="España" required>
+          <input type="text" name="pais" id="f_pais"  required>
           <div class="field-err" id="e_pais">Obligatorio</div>
         </div>
         <div class="field">
@@ -268,18 +268,18 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
       <div class="row2">
         <div class="field">
           <label>Teléfono móvil · Mobile</label>
-          <input type="tel" name="telefono_movil" placeholder="+34 6xx xxx xxx" autocomplete="tel">
+          <input type="tel" name="telefono_movil" placeholder="" autocomplete="tel">
         </div>
         <div class="field">
           <label>Email *</label>
-          <input type="email" name="email_viajero" id="f_email" placeholder="tu@email.com" autocomplete="email" required>
+          <input type="email" name="email_viajero" id="f_email" placeholder="" autocomplete="email" required>
           <div class="field-err" id="e_email">Email no válido</div>
         </div>
       </div>
 
       <div class="field">
         <label>Parentesco entre viajeros (si hay menores)</label>
-        <input type="text" name="parentesco" placeholder="Opcional · padre/hijo…">
+        <input type="text" name="parentesco" placeholder="">
       </div>
 
     </div>
@@ -309,7 +309,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
       <div class="row2">
         <div class="field">
           <label>Nº de referencia · Airbnb code</label>
-          <input type="text" name="referencia" placeholder="HM…">
+          <input type="text" name="referencia" placeholder="">
         </div>
         <div class="field">
           <label>Tipo de pago · Payment</label>
@@ -530,8 +530,8 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
     document.querySelector('.error, .error-text, [id^=e_]:not([style*="none"])')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  // Save signature as base64
-  document.getElementById('firmaHidden').value = canvas.toDataURL('image/png');
+  // Save signature confirmation (not base64 to avoid payload size limit)
+  document.getElementById('firmaHidden').value = '✓ Firmado digitalmente el ' + new Date().toLocaleString('es-ES') + ' desde ' + navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('Android') ? 'móvil' : 'ordenador';
 
   const btn=document.getElementById('btnSubmit');
   const sp=document.getElementById('spinner');
