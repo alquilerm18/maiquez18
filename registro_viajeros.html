@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -132,13 +133,9 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
   <div class="progress-label" id="pLabel">Rellena todos los campos</div>
 </div>
 
-<form id="regForm" action="https://formsubmit.co/alquilerm18@gmail.com" method="POST" style="max-width:520px;margin:0 auto;padding:0 0 18px">
+<form id="regForm" style="max-width:520px;margin:0 auto;padding:0 0 18px">
 
-  <!-- HIDDEN FIELDS FOR FORMSUBMIT -->
-  <input type="hidden" name="_subject" value="✅ Nuevo Registro de Viajero — Maiquez 18">
-  <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_next" value="https://alquilerm18.github.io/maiquez18/registro_viajeros.html?enviado=1">
+  <!-- Envío via Google Apps Script -->
   <input type="hidden" name="firma_digital" id="firmaHidden" value="">
   <input type="hidden" name="titular_nombre" value="Gonzalo Arroyo Fernández">
   <input type="hidden" name="titular_doc" value="DNI 05231837-G">
@@ -537,12 +534,30 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   ts.type='hidden'; ts.name='fecha_envio'; ts.value=new Date().toLocaleString('es-ES');
   this.appendChild(ts);
 
-  // Submit nativo — FormSubmit redirige a _next tras el envío
+  // Envío via Google Apps Script
   const btn=document.getElementById('btnSubmit');
   const sp=document.getElementById('spinner');
   const bt=document.getElementById('btnText');
   btn.disabled=true; sp.style.display='block'; bt.textContent='Enviando…';
-  this.submit();
+
+  const formData=new FormData(this);
+  const params=new URLSearchParams(formData).toString();
+
+  fetch('https://script.google.com/macros/s/AKfycbx_0W6kdXy6uyq9QbeUenfPTadKRvj-GVss6Ceju1n4ts03-lQIP7pNRUPIk78Iq8Vffw/exec',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:params,
+    mode:'no-cors'
+  })
+  .then(()=>{
+    // no-cors no devuelve respuesta legible — asumimos éxito
+    window.location.href='https://alquilerm18.github.io/maiquez18/registro_viajeros.html?enviado=1';
+  })
+  .catch(err=>{
+    btn.disabled=false; sp.style.display='none'; bt.textContent='Enviar registro';
+    alert('Error al enviar. Por favor inténtalo de nuevo o contacta con el propietario.');
+    console.error(err);
+  });
 });
 
 updateProgress();
