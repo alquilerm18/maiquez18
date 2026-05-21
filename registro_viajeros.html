@@ -541,16 +541,13 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   btn.disabled=true; sp.style.display='block'; bt.textContent='Enviando…';
 
   const formData=new FormData(this);
-  const params=new URLSearchParams(formData).toString();
 
   fetch('https://script.google.com/macros/s/AKfycbx_0W6kdXy6uyq9QbeUenfPTadKRvj-GVss6Ceju1n4ts03-lQIP7pNRUPIk78Iq8Vffw/exec',{
     method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:params,
+    body:formData,
     mode:'no-cors'
   })
   .then(()=>{
-    // no-cors no devuelve respuesta legible — asumimos éxito
     window.location.href='https://alquilerm18.github.io/maiquez18/registro_viajeros.html?enviado=1';
   })
   .catch(err=>{
