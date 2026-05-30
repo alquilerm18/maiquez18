@@ -134,7 +134,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
 
 <form id="regForm" style="max-width:520px;margin:0 auto;padding:0 0 18px">
 
-  <!-- Envío via Google Apps Script -->
+  <!-- Envio via Google Apps Script -->
   <input type="hidden" name="firma_digital" id="firmaHidden" value="">
   <input type="hidden" name="titular_nombre" value="Gonzalo Arroyo Fernández">
   <input type="hidden" name="titular_doc" value="DNI 05231837-G">
@@ -395,14 +395,14 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
 </form>
 
 <!-- SUCCESS SCREEN -->
-<div class="success-screen" id="successScreen">
+<div class="success-screen" id="successScreen" style="display:none">
   <div class="success-icon">✓</div>
-  <div class="success-title">¡Registro enviado!</div>
-  <p class="success-msg">
-    Gracias. Tu registro de viajero ha sido enviado correctamente y el titular del alojamiento lo recibirá en breve.<br><br>
-    <em>Thank you. Your traveller registration has been successfully submitted.</em><br><br>
-    <strong>Maiquez 18 · Madrid</strong>
-  </p>
+  <div class="success-title">¡Registro enviado! · Registration submitted!</div>
+  <p class="success-msg">Gracias. Tu registro ha sido enviado correctamente.<br>
+  <em>Thank you. Your registration has been successfully submitted.</em></p>
+  <div id="summaryBox" style="background:#fff;border-radius:10px;padding:16px;margin:18px auto;max-width:460px;text-align:left;font-size:.82rem;box-shadow:0 2px 12px rgba(0,0,0,.08)"></div>
+  <button onclick="printSummary()" style="background:#1e4976;color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:.9rem;cursor:pointer;margin-top:8px;font-family:inherit">🖨 Imprimir / Guardar PDF · Print / Save PDF</button>
+  <p style="font-size:.72rem;color:#aaa;margin-top:10px">Maiquez 18 · Madrid</p>
 </div>
 
 <script>
@@ -533,13 +533,15 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   ts.type='hidden'; ts.name='fecha_envio'; ts.value=new Date().toLocaleString('es-ES');
   this.appendChild(ts);
 
-  // Envío via Google Apps Script
+  // Submit nativo — FormSubmit redirige a _next tras el envío
   const btn=document.getElementById('btnSubmit');
   const sp=document.getElementById('spinner');
   const bt=document.getElementById('btnText');
   btn.disabled=true; sp.style.display='block'; bt.textContent='Enviando…';
 
   const formData=new FormData(this);
+  const resumenData={};
+  formData.forEach((v,k)=>{ resumenData[k]=v; });
 
   fetch('https://script.google.com/macros/s/AKfycbx_0W6kdXy6uyq9QbeUenfPTadKRvj-GVss6Ceju1n4ts03-lQIP7pNRUPIk78Iq8Vffw/exec',{
     method:'POST',
@@ -547,14 +549,54 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
     mode:'no-cors'
   })
   .then(()=>{
-    window.location.href='https://alquilerm18.github.io/maiquez18/registro_viajeros.html?enviado=1';
+    document.getElementById('regForm').style.display='none';
+    const ss=document.getElementById('successScreen');
+    ss.style.display='flex';
+    const campos=[
+      ['✓ Firma','firma_digital'],['Nombre','nombre'],['Primer apellido','primer_apellido'],
+      ['Segundo apellido','segundo_apellido'],['Sexo','sexo'],['Tipo doc.','tipo_documento'],
+      ['Nº documento','numero_documento'],['Nacionalidad','nacionalidad'],
+      ['F. nacimiento','fecha_nacimiento'],['Residencia','residencia'],
+      ['Dirección','direccion'],['Localidad','localidad'],['País','pais'],
+      ['Tel. móvil','telefono_movil'],['Email','email_viajero'],
+      ['Entrada','fecha_entrada'],['Salida','fecha_salida'],['Referencia','referencia']
+    ];
+    let html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">';
+    html+='<tr style="background:#1e4976;color:#fff"><th style="padding:6px 8px;text-align:left">Campo</th><th style="padding:6px 8px;text-align:left">Valor</th></tr>';
+    campos.forEach(([label,key],i)=>{
+      const val=resumenData[key]||'—';
+      const bg=i%2===0?'#f8f8f8':'#fff';
+      html+=`<tr style="background:${bg}"><td style="padding:5px 8px;font-weight:600;color:#444">${label}</td><td style="padding:5px 8px;color:#111">${val}</td></tr>`;
+    });
+    html+='</table>';
+    document.getElementById('summaryBox').innerHTML=html;
   })
   .catch(err=>{
     btn.disabled=false; sp.style.display='none'; bt.textContent='Enviar registro';
-    alert('Error al enviar. Por favor inténtalo de nuevo o contacta con el propietario.');
+    alert('Error al enviar. Por favor inténtalo de nuevo.');
     console.error(err);
   });
 });
+
+function printSummary(){
+  const box=document.getElementById('summaryBox');
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registro de Viajeros · Maiquez 18</title>'
+  +'<style>body{font-family:Arial,sans-serif;padding:24px;font-size:12px}'
+  +'h2{color:#1e4976;margin-bottom:4px}p{color:#666;font-size:11px;margin-bottom:16px}'
+  +'table{width:100%;border-collapse:collapse}th{background:#1e4976;color:#fff;padding:7px 10px;text-align:left}'
+  +'td{padding:6px 10px;border-bottom:1px solid #dde}tr:nth-child(even){background:#f8f8f8}'
+  +'.foot{font-size:10px;color:#aaa;margin-top:20px;border-top:1px solid #dde;padding-top:8px}'
+  +'@media print{@page{margin:14mm}}</style></head><body>'
+  +'<h2>✓ Registro de Viajeros · Maiquez 18</h2>'
+  +'<p>Calle Maiquez, 18 · 28009 Madrid · Titular: Gonzalo Arroyo Fernández · DNI 05231837-G</p>'
+  +box.innerHTML
+  +'<div class="foot">Documento confidencial · RGPD (UE) 2016/679 · Ley Orgánica 4/2015 · RD 933/2021<br>'
+  +'Fecha de envío: '+new Date().toLocaleString('es-ES')+'</div>'
+  +'<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt>'
+  +'</body></html>');
+  w.document.close();
+}
 
 updateProgress();
 </script>
