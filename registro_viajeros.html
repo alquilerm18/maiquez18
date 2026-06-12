@@ -566,7 +566,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   .then(()=>{
     document.getElementById('regForm').style.display='none';
     const ss=document.getElementById('successScreen');
-    ss.style.display='flex';
+    ss.style.display='flex'; ss.style.flexDirection='column'; ss.style.alignItems='center';
     const secciones=[
       {titulo:'Datos personales', campos:[
         ['Nombre','nombre'],['Primer apellido','primer_apellido'],['Segundo apellido','segundo_apellido'],
