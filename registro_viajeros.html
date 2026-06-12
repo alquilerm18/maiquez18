@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -96,7 +97,17 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* SUCCESS */
-.success-screen{display:none;text-align:center;padding:50px 24px;max-width:520px;margin:0 auto}
+.success-screen{display:none;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 50px;max-width:560px;margin:0 auto}
+#summaryBox .section-title{font-family:'Playfair Display',serif;font-size:.92rem;color:var(--navy);background:linear-gradient(90deg,var(--light),transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid var(--accent);text-align:left}
+#summaryBox .section-body{border:1px solid var(--br);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+#summaryBox .row{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;font-size:.8rem}
+#summaryBox .row:nth-child(even){background:var(--light)}
+#summaryBox .lbl{color:var(--tm);font-weight:600}
+#summaryBox .val{color:var(--tx);text-align:right}
+#summaryBox .sig-box{display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;margin-top:4px}
+#summaryBox .sig-check{font-size:1.2rem;color:var(--gn)}
+#summaryBox .sig-title{font-size:.78rem;font-weight:700;color:var(--navy)}
+#summaryBox .sig-date{font-size:.72rem;color:var(--tm)}
 .success-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--gn),#2ecc71);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,122,80,.30)}
 .success-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:10px}
 .success-msg{font-size:.88rem;color:var(--tm);line-height:1.65;max-width:340px;margin:0 auto}
@@ -397,12 +408,16 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
 <!-- SUCCESS SCREEN -->
 <div class="success-screen" id="successScreen" style="display:none">
   <div class="success-icon">✓</div>
-  <div class="success-title">¡Registro enviado! · Registration submitted!</div>
-  <p class="success-msg">Gracias. Tu registro ha sido enviado correctamente.<br>
-  <em>Thank you. Your registration has been successfully submitted.</em></p>
-  <div id="summaryBox" style="background:#fff;border-radius:10px;padding:16px;margin:18px auto;max-width:460px;text-align:left;font-size:.82rem;box-shadow:0 2px 12px rgba(0,0,0,.08)"></div>
-  <button onclick="printSummary()" style="background:#1e4976;color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:.9rem;cursor:pointer;margin-top:8px;font-family:inherit">🖨 Imprimir / Guardar PDF · Print / Save PDF</button>
-  <p style="font-size:.72rem;color:#aaa;margin-top:10px">Maiquez 18 · Madrid</p>
+  <div class="success-title">¡Registro enviado!</div>
+  <p class="success-msg" style="margin-bottom:4px">Gracias. Tu registro ha sido enviado correctamente.</p>
+  <p class="success-msg" style="font-style:italic;color:var(--tm);font-size:.82rem;margin-bottom:0">Thank you. Your registration has been successfully submitted.</p>
+
+  <div id="summaryBox" style="width:100%;max-width:480px;margin:24px auto 0;text-align:left"></div>
+
+  <button onclick="printSummary()" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:.92rem;font-weight:600;cursor:pointer;margin-top:24px;font-family:inherit;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(27,58,92,.25);letter-spacing:.02em">
+    <span style="font-size:1.1rem">🖨</span> Imprimir / Guardar PDF
+  </button>
+  <p style="font-size:.7rem;color:var(--tm);margin-top:18px;letter-spacing:.06em;text-transform:uppercase">Maiquez 18 · Madrid</p>
 </div>
 
 <script>
@@ -552,23 +567,50 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
     document.getElementById('regForm').style.display='none';
     const ss=document.getElementById('successScreen');
     ss.style.display='flex';
-    const campos=[
-      ['✓ Firma','firma_digital'],['Nombre','nombre'],['Primer apellido','primer_apellido'],
-      ['Segundo apellido','segundo_apellido'],['Sexo','sexo'],['Tipo doc.','tipo_documento'],
-      ['Nº documento','numero_documento'],['Nacionalidad','nacionalidad'],
-      ['F. nacimiento','fecha_nacimiento'],['Residencia','residencia'],
-      ['Dirección','direccion'],['Localidad','localidad'],['País','pais'],
-      ['Tel. móvil','telefono_movil'],['Email','email_viajero'],
-      ['Entrada','fecha_entrada'],['Salida','fecha_salida'],['Referencia','referencia']
+    const secciones=[
+      {titulo:'Datos personales', campos:[
+        ['Nombre','nombre'],['Primer apellido','primer_apellido'],['Segundo apellido','segundo_apellido'],
+        ['Sexo','sexo'],['Fecha de nacimiento','fecha_nacimiento'],['Nacionalidad','nacionalidad'],
+        ['Tipo de documento','tipo_documento'],['Nº de documento','numero_documento']
+      ]},
+      {titulo:'Residencia y contacto', campos:[
+        ['Dirección','direccion'],['Localidad','localidad'],['País','pais'],['Residencia habitual','residencia'],
+        ['Teléfono móvil','telefono_movil'],['Email','email_viajero']
+      ]},
+      {titulo:'Estancia', campos:[
+        ['Fecha de entrada','fecha_entrada'],['Fecha de salida','fecha_salida'],['Nº de referencia','referencia']
+      ]}
     ];
-    let html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">';
-    html+='<tr style="background:#1e4976;color:#fff"><th style="padding:6px 8px;text-align:left">Campo</th><th style="padding:6px 8px;text-align:left">Valor</th></tr>';
-    campos.forEach(([label,key],i)=>{
-      const val=resumenData[key]||'—';
-      const bg=i%2===0?'#f8f8f8':'#fff';
-      html+=`<tr style="background:${bg}"><td style="padding:5px 8px;font-weight:600;color:#444">${label}</td><td style="padding:5px 8px;color:#111">${val}</td></tr>`;
+
+    let html='';
+    secciones.forEach(sec=>{
+      const filas=sec.campos.filter(([,key])=>resumenData[key]);
+      if(!filas.length) return;
+      html+=`<div style="margin-bottom:18px">`;
+      html+=`<div style="font-family:'Playfair Display',serif;font-size:.95rem;color:var(--navy);background:linear-gradient(90deg,var(--light),transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid var(--accent)">${sec.titulo}</div>`;
+      html+=`<div style="border:1px solid var(--br);border-top:none;border-radius:0 0 8px 8px;overflow:hidden">`;
+      filas.forEach(([label,key],i)=>{
+        const val=resumenData[key];
+        const bg=i%2===0?'#fff':'var(--light)';
+        html+=`<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 12px;background:${bg};font-size:.82rem">
+          <span style="color:var(--tm);font-weight:600">${label}</span>
+          <span style="color:var(--tx);text-align:right">${val}</span>
+        </div>`;
+      });
+      html+=`</div></div>`;
     });
-    html+='</table>';
+
+    // Firma — bloque destacado al final
+    if(resumenData['firma_digital']){
+      html+=`<div style="display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;margin-top:4px">
+        <span style="font-size:1.2rem;color:var(--gn)">✓</span>
+        <div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--navy)">Documento firmado digitalmente</div>
+          <div style="font-size:.72rem;color:var(--tm)">${resumenData['fecha_envio']||''}</div>
+        </div>
+      </div>`;
+    }
+
     document.getElementById('summaryBox').innerHTML=html;
   })
   .catch(err=>{
@@ -582,17 +624,43 @@ function printSummary(){
   const box=document.getElementById('summaryBox');
   const w=window.open('','_blank');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registro de Viajeros · Maiquez 18</title>'
-  +'<style>body{font-family:Arial,sans-serif;padding:24px;font-size:12px}'
-  +'h2{color:#1e4976;margin-bottom:4px}p{color:#666;font-size:11px;margin-bottom:16px}'
-  +'table{width:100%;border-collapse:collapse}th{background:#1e4976;color:#fff;padding:7px 10px;text-align:left}'
-  +'td{padding:6px 10px;border-bottom:1px solid #dde}tr:nth-child(even){background:#f8f8f8}'
-  +'.foot{font-size:10px;color:#aaa;margin-top:20px;border-top:1px solid #dde;padding-top:8px}'
-  +'@media print{@page{margin:14mm}}</style></head><body>'
-  +'<h2>✓ Registro de Viajeros · Maiquez 18</h2>'
-  +'<p>Calle Maiquez, 18 · 28009 Madrid · Titular: Gonzalo Arroyo Fernández · DNI 05231837-G</p>'
+  +'<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
+  +'<style>'
+  +'*{box-sizing:border-box;margin:0;padding:0}'
+  +'body{font-family:"DM Sans",Arial,sans-serif;color:#1a2d42;padding:0;background:#fff}'
+  +'.header{background:#1b3a5c;color:#fff;padding:28px 32px;text-align:center;position:relative;overflow:hidden}'
+  +'.header::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(200,168,75,.08) 0,rgba(200,168,75,.08) 1px,transparent 0,transparent 12px)}'
+  +'.header-inner{position:relative;z-index:1}'
+  +'.brand{font-family:"Playfair Display",serif;font-size:1.5rem;letter-spacing:.02em;margin-bottom:4px}'
+  +'.tagline{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#c8a84b}'
+  +'.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:.68rem;color:rgba(255,255,255,.85);margin-top:12px}'
+  +'.badge-dot{width:6px;height:6px;border-radius:50%;background:#4ade80}'
+  +'.content{padding:24px 32px}'
+  +'.owner-line{font-size:.74rem;color:#6b7f96;text-align:center;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #e8eff7}'
+  +'.section-title{font-family:"Playfair Display",serif;font-size:.92rem;color:#1b3a5c;background:linear-gradient(90deg,#f0f7fd,transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid #c8a84b;margin-top:16px}'
+  +'.section-body{border:1px solid #d0dce8;border-top:none;border-radius:0 0 8px 8px;overflow:hidden}'
+  +'.row{display:flex;justify-content:space-between;gap:14px;padding:8px 12px;font-size:.8rem}'
+  +'.row:nth-child(even){background:#f5f7fa}'
+  +'.row .lbl{color:#6b7f96;font-weight:600}'
+  +'.row .val{color:#1a2d42;text-align:right}'
+  +'.sig-box{display:flex;align-items:center;gap:10px;background:#f0f7fd;border:1px solid #c8a84b;border-radius:8px;padding:12px 16px;margin-top:18px}'
+  +'.sig-check{font-size:1.3rem;color:#1a7a52}'
+  +'.sig-title{font-size:.8rem;font-weight:700;color:#1b3a5c}'
+  +'.sig-date{font-size:.72rem;color:#6b7f96}'
+  +'.foot{font-size:.68rem;color:#a8b8c8;text-align:center;margin-top:24px;border-top:1px solid #e8eff7;padding-top:12px;line-height:1.6}'
+  +'@media print{@page{margin:0}.header{padding:24px 32px}}'
+  +'</style></head><body>'
+  +'<div class="header"><div class="header-inner">'
+  +'<div class="brand">Maiquez 18</div>'
+  +'<div class="tagline">Registro de Viajeros · Madrid</div>'
+  +'<div class="badge"><span class="badge-dot"></span>Formulario oficial · RD 933/2021</div>'
+  +'</div></div>'
+  +'<div class="content">'
+  +'<div class="owner-line">Calle Maiquez, 18 · 28009 Madrid &nbsp;·&nbsp; Titular: Gonzalo Arroyo Fernández &nbsp;·&nbsp; DNI 05231837-G</div>'
   +box.innerHTML
-  +'<div class="foot">Documento confidencial · RGPD (UE) 2016/679 · Ley Orgánica 4/2015 · RD 933/2021<br>'
-  +'Fecha de envío: '+new Date().toLocaleString('es-ES')+'</div>'
+  +'<div class="foot">Documento confidencial · Datos tratados conforme al RGPD (UE) 2016/679<br>'
+  +'Ley Orgánica 4/2015 · Real Decreto 933/2021 · Generado el '+new Date().toLocaleString('es-ES')+'</div>'
+  +'</div>'
   +'<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt>'
   +'</body></html>');
   w.document.close();
