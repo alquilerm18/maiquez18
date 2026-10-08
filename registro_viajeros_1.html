@@ -1,0 +1,894 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Registro de Viajeros · Maiquez 18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b3a5c;--blue:#2563a8;--light:#e8f1fb;--accent:#c8a84b;
+  --bg:#f5f7fa;--wh:#fff;--tx:#1a2d42;--tm:#6b7f96;--br:#d0dce8;
+  --gn:#1a7a50;--rd:#c0392b;--ra:12px;--rs:8px;
+  --sh:0 2px 16px rgba(27,58,92,.10);--sl:0 8px 40px rgba(27,58,92,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:40px}
+
+/* HEADER */
+.header{background:var(--navy);padding:22px 20px 18px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(200,168,75,.06) 0,rgba(200,168,75,.06) 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.header-inner{position:relative;z-index:1}
+.logo-line{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand{font-family:'Playfair Display',serif;font-size:1.25rem;color:#fff;letter-spacing:.02em}
+.tagline{font-size:.72rem;color:rgba(200,168,75,.9);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.header-badge{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:30px;padding:6px 16px;display:inline-flex;align-items:center;gap:7px;font-size:.75rem;color:rgba(255,255,255,.85)}
+.badge-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+
+/* PROGRESS */
+.progress-wrap{padding:14px 20px 0;max-width:520px;margin:0 auto}
+.progress-bar{height:4px;background:var(--br);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:4px;transition:width .4s ease;width:0%}
+.progress-label{font-size:.71rem;color:var(--tm);text-align:right}
+
+/* FORM CARD */
+.card{background:var(--wh);border-radius:var(--ra);box-shadow:var(--sh);margin:14px auto 0;max-width:520px;overflow:hidden}
+.section-head{background:var(--navy);padding:10px 18px;display:flex;align-items:center;gap:9px}
+.section-num{width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--navy);flex-shrink:0}
+.section-title{font-family:'Playfair Display',serif;font-size:.92rem;color:#fff}
+.section-body{padding:16px}
+
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.69rem;font-weight:600;color:var(--tm);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:.92rem;border:1.5px solid var(--br);border-radius:var(--rs);padding:11px 13px;color:var(--tx);background:var(--wh);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,168,.10)}
+.field input[type=date]{min-width:0;min-height:46px}
+.field input.error,.field select.error{border-color:var(--rd);box-shadow:0 0 0 3px rgba(192,57,43,.08)}
+.field textarea{resize:none;min-height:64px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+.field-hint{font-size:.68rem;color:var(--tm);margin-top:4px}
+.field-err{font-size:.68rem;color:var(--rd);margin-top:4px;display:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* PRE-FILLED INFO BOX */
+.info-box{background:var(--light);border-radius:var(--rs);padding:12px 14px;margin-bottom:14px;border-left:3px solid var(--blue)}
+.info-box-title{font-size:.67rem;font-weight:700;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.info-row{display:flex;justify-content:space-between;font-size:.8rem;padding:2px 0}
+.info-label{color:var(--tm)}
+.info-value{font-weight:600;color:var(--navy);text-align:right}
+
+/* SIGNATURE */
+.sig-wrap{margin-bottom:14px}
+.sig-label{font-size:.69rem;font-weight:600;color:var(--tm);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.sig-clear{font-size:.72rem;color:var(--blue);font-weight:500;cursor:pointer;text-transform:none;letter-spacing:0;background:none;border:none;padding:2px 6px;border-radius:4px;transition:background .13s}
+.sig-clear:hover{background:var(--light)}
+.sig-canvas-wrap{border:2px dashed var(--br);border-radius:var(--rs);background:#fafcff;overflow:hidden;position:relative;transition:border-color .15s}
+.sig-canvas-wrap.has-sig{border-color:var(--blue);border-style:solid}
+.sig-canvas-wrap.error{border-color:var(--rd)}
+canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height:130px}
+.sig-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .2s}
+.sig-hint-inner{text-align:center;color:var(--tm)}
+.sig-hint-icon{font-size:1.6rem;margin-bottom:4px}
+.sig-hint-text{font-size:.75rem}
+
+/* LEGAL */
+.legal-box{background:#fffbf0;border:1px solid #e8d5a0;border-radius:var(--rs);padding:12px 14px;margin-bottom:14px}
+.legal-box p{font-size:.75rem;color:#6b5a2a;line-height:1.55}
+.legal-box strong{color:#4a3a10}
+
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.check-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;accent-color:var(--blue);cursor:pointer;margin-top:1px}
+.check-row label{font-size:.8rem;color:var(--tx);line-height:1.5;cursor:pointer}
+.check-row label.error-text{color:var(--rd)}
+
+/* CLÁUSULA TEMPORAL */
+.cl-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--light)}
+.cl-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.cl-title{font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:6px;letter-spacing:.02em}
+.cl-text{font-size:.78rem;color:var(--tx);line-height:1.55;margin-bottom:8px}
+.cl-text ol{padding-left:18px;margin-top:4px}
+.cl-text li{margin-bottom:2px}
+.cl-en{font-size:.7rem;color:var(--tm);font-style:italic;margin-bottom:8px;line-height:1.45}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;border:1.5px solid var(--br);border-radius:var(--rs);margin-bottom:6px;cursor:pointer;transition:all .13s;background:var(--wh)}
+.opt:hover{border-color:var(--blue)}
+.opt input{width:19px;height:19px;flex-shrink:0;accent-color:var(--blue);margin-top:1px;cursor:pointer}
+.opt span{font-size:.8rem;line-height:1.4}
+.opt span em{display:block;font-size:.7rem;color:var(--tm)}
+.opt.checked{border-color:var(--blue);background:var(--light)}
+.opt-group.error .opt{border-color:var(--rd)}
+.inline-num{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.8rem;margin-bottom:8px}
+.extra{display:none;margin:2px 0 8px 30px}
+.extra input{width:100%;font-family:inherit;font-size:.85rem;border:1.5px solid var(--br);border-radius:var(--rs);padding:9px 11px;outline:none}
+.extra input:focus{border-color:var(--blue)}
+.extra input.error{border-color:var(--rd)}
+
+/* SUBMIT */
+.submit-wrap{padding:0 0 4px;max-width:520px;margin:0 auto}
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;border:none;border-radius:var(--ra);padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(37,99,168,.35);transition:all .18s;letter-spacing:.02em}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(37,99,168,.45)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-submit .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+.success-screen{display:none;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 50px;max-width:560px;margin:0 auto}
+#summaryBox .section-title{font-family:'Playfair Display',serif;font-size:.92rem;color:var(--navy);background:linear-gradient(90deg,var(--light),transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid var(--accent);text-align:left}
+#summaryBox .section-body{border:1px solid var(--br);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+#summaryBox .row{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;font-size:.8rem}
+#summaryBox .row:nth-child(even){background:var(--light)}
+#summaryBox .lbl{color:var(--tm);font-weight:600}
+#summaryBox .val{color:var(--tx);text-align:right}
+#summaryBox .sig-box{display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;margin-top:4px}
+#summaryBox .sig-check{font-size:1.2rem;color:var(--gn)}
+#summaryBox .sig-title{font-size:.78rem;font-weight:700;color:var(--navy)}
+#summaryBox .sig-date{font-size:.72rem;color:var(--tm)}
+.success-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--gn),#2ecc71);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,122,80,.30)}
+.success-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:10px}
+.success-msg{font-size:.88rem;color:var(--tm);line-height:1.65;max-width:340px;margin:0 auto}
+
+/* PADDING SECTIONS */
+.pad{padding:0 20px}
+.mt{margin-top:14px}
+
+@media(max-width:420px){
+  .row2{grid-template-columns:1fr}
+  .row3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-line">
+      <div class="logo-icon">🏠</div>
+      <div class="brand">Maiquez 18</div>
+    </div>
+    <div class="tagline">Registro de Viajeros · Madrid</div>
+    <div class="header-badge">
+      <span class="badge-dot"></span>
+      Formulario oficial · RD 933/2021
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap pad">
+  <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+  <div class="progress-label" id="pLabel">Rellena todos los campos</div>
+</div>
+
+<form id="regForm" style="max-width:520px;margin:0 auto;padding:0 0 18px">
+
+  <!-- Envio via Google Apps Script -->
+  <input type="hidden" name="firma_digital" id="firmaHidden" value="">
+  <input type="hidden" name="titular_nombre" value="Gonzalo Arroyo Fernández">
+  <input type="hidden" name="titular_doc" value="DNI 05231837-G">
+  <input type="hidden" name="inmueble_dir" value="Calle Maiquez, 18 · 28009 Madrid">
+
+  <!-- SECCIÓN 1: INMUEBLE (info, no editable) -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">Datos del Inmueble</div>
+    </div>
+    <div class="section-body">
+      <div class="info-box">
+        <div class="info-box-title">Alojamiento · Accommodation</div>
+        <div class="info-row"><span class="info-label">Dirección · Address</span><span class="info-value">Calle Maiquez, 18 · 28009 Madrid</span></div>
+        <div class="info-row"><span class="info-label">Titular · Owner</span><span class="info-value">Gonzalo Arroyo Fernández</span></div>
+        <div class="info-row"><span class="info-label">Teléfono · Phone</span><span class="info-value">+34 644 30 51 41</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value">alquilerm18@gmail.com</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: DATOS DEL VIAJERO -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div class="section-title">Tus datos personales · Your personal details</div>
+    </div>
+    <div class="section-body">
+
+      <div class="row2">
+        <div class="field">
+          <label>Nombre · First name *</label>
+          <input type="text" name="nombre" id="f_nombre" placeholder="" autocomplete="given-name" required>
+          <div class="field-err" id="e_nombre">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Primer apellido · Surname *</label>
+          <input type="text" name="primer_apellido" id="f_ap1" placeholder="" autocomplete="family-name" required>
+          <div class="field-err" id="e_ap1">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Segundo apellido · 2nd surname</label>
+          <input type="text" name="segundo_apellido" placeholder="" autocomplete="additional-name">
+        </div>
+        <div class="field">
+          <label>Sexo · Gender *</label>
+          <select name="sexo" id="f_sexo" required>
+            <option value="">— Selecciona —</option>
+            <option value="H">H — Hombre / Male</option>
+            <option value="M">M — Mujer / Female</option>
+            <option value="X">X — No binario / Non-binary</option>
+          </select>
+          <div class="field-err" id="e_sexo">Selecciona una opción</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Tipo de documento *</label>
+          <select name="tipo_documento" id="f_tdoc" required>
+            <option value="">— Tipo —</option>
+            <option value="DNI">DNI</option>
+            <option value="Pasaporte">Pasaporte / Passport</option>
+            <option value="TIE">TIE</option>
+            <option value="Carta de identidad">Carta de identidad / ID Card</option>
+          </select>
+          <div class="field-err" id="e_tdoc">Selecciona una opción</div>
+        </div>
+        <div class="field">
+          <label>Nº documento · Doc. number *</label>
+          <input type="text" name="numero_documento" id="f_doc" placeholder="" autocomplete="off" required>
+          <div class="field-err" id="e_doc">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Nacionalidad · Nationality *</label>
+          <input type="text" name="nacionalidad" id="f_nac" placeholder="" required>
+          <div class="field-err" id="e_nac">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Fecha nacimiento · Date of birth *</label>
+          <input type="text" name="fecha_nacimiento" id="f_fnac" placeholder="DD-MM-AAAA" pattern="\d{2}-\d{2}-\d{4}" required>
+          <div class="field-err" id="e_fnac">Formato DD-MM-AAAA</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Lugar de residencia habitual · Place of residence *</label>
+        <input type="text" name="residencia" id="f_res" placeholder="" required>
+        <div class="field-err" id="e_res">Campo obligatorio</div>
+      </div>
+
+      <div class="field">
+        <label>Dirección completa · Full address *</label>
+        <input type="text" name="direccion" id="f_dir" placeholder="" autocomplete="street-address" required>
+        <div class="field-err" id="e_dir">Campo obligatorio</div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label>Localidad · City *</label>
+          <input type="text" name="localidad" id="f_loc"  required>
+          <div class="field-err" id="e_loc">Obligatorio</div>
+        </div>
+        <div class="field">
+          <label>País · Country *</label>
+          <input type="text" name="pais" id="f_pais"  required>
+          <div class="field-err" id="e_pais">Obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Nº viajeros</label>
+          <select name="num_viajeros">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Teléfono móvil · Mobile</label>
+          <input type="tel" name="telefono_movil" placeholder="" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" name="email_viajero" id="f_email" placeholder="" autocomplete="email" required>
+          <div class="field-err" id="e_email">Email no válido</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Parentesco entre viajeros (si hay menores)</label>
+        <input type="text" name="parentesco" placeholder="">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: DATOS DE LA ESTANCIA -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div class="section-title">Datos de la estancia · Stay details</div>
+    </div>
+    <div class="section-body">
+
+      <div class="row2">
+        <div class="field">
+          <label>Fecha de entrada · Check-in *</label>
+          <input type="text" name="fecha_entrada" id="f_fent" placeholder="DD-MM-AAAA HH:MM" required>
+          <div class="field-err" id="e_fent">Campo obligatorio</div>
+        </div>
+        <div class="field">
+          <label>Fecha de salida · Check-out *</label>
+          <input type="text" name="fecha_salida" id="f_fsal" placeholder="DD-MM-AAAA HH:MM" required>
+          <div class="field-err" id="e_fsal">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Nº de referencia · Airbnb code</label>
+          <input type="text" name="referencia" placeholder="">
+        </div>
+        <div class="field">
+          <label>Tipo de pago · Payment</label>
+          <select name="tipo_pago">
+            <option value="Airbnb (plataforma)">Airbnb</option>
+            <option value="Transferencia">Transferencia / Transfer</option>
+            <option value="Tarjeta">Tarjeta / Card</option>
+            <option value="Efectivo">Efectivo / Cash</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: CLÁUSULA DE JUSTIFICACIÓN TEMPORAL -->
+  <input type="hidden" name="motivo_temporal" id="h_motivo" value="">
+  <input type="hidden" name="documentacion_acreditativa" id="h_docum" value="">
+  <input type="hidden" name="duracion_maxima" id="h_duracion" value="">
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div class="section-title">Justificación temporal · Temporary stay</div>
+    </div>
+    <div class="section-body">
+
+      <div class="cl-block">
+        <div class="cl-title">CLÁUSULA DE JUSTIFICACIÓN TEMPORAL PARA ARRENDAMIENTO DE HABITACIÓN EN RÉGIMEN DE TEMPORADA</div>
+        <div class="cl-en">Seasonal room rental — temporary-stay justification clause. Please complete points 3.2, 3.3, 3.4, 3.5 and 3.7.</div>
+      </div>
+
+      <!-- 3.1 -->
+      <div class="cl-block">
+        <div class="cl-title">3.1.- DECLARACIÓN PREVIA</div>
+        <div class="cl-text">El presente contrato se suscribe al amparo del artículo 5.1 de la Ley de Arrendamientos Urbanos, y tiene por objeto el arrendamiento de una habitación en régimen de temporada, no constituyendo contrato de arrendamiento de vivienda habitual, tal y como se especifica y justifica a continuación.</div>
+      </div>
+
+      <!-- 3.2 -->
+      <div class="cl-block">
+        <div class="cl-title">3.2.- MOTIVO CAUSAL Y NECESIDAD TEMPORAL *</div>
+        <div class="cl-text">El arrendatario/huésped declara y justifica expresamente que necesita alojamiento temporal en Madrid por los siguientes motivos causales (marcar la que proceda):</div>
+        <div class="cl-en">Tick the reason(s) for your temporary stay in Madrid.</div>
+        <div class="opt-group" id="g_motivo">
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Estancia por motivos laborales/profesionales de duración determinada"><span>Estancia por motivos laborales/profesionales de duración determinada<em>Work / professional stay of fixed duration</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Formación académica, cursos o especializaciones"><span>Formación académica, cursos o especializaciones<em>Academic training, courses or specialisation</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Trámites administrativos o gestiones puntuales en la capital"><span>Trámites administrativos o gestiones puntuales en la capital<em>Administrative procedures or specific errands in Madrid</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Asistencia a eventos concretos (congresos, exposiciones, festivales)"><span>Asistencia a eventos concretos (congresos, exposiciones, festivales)<em>Attending specific events (congresses, exhibitions, festivals)</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Proceso de búsqueda de vivienda habitual de forma independiente"><span>Proceso de búsqueda de vivienda habitual de forma independiente<em>Searching for a permanent home</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Tratamientos médicos o rehabilitación temporal"><span>Tratamientos médicos o rehabilitación temporal<em>Medical treatment or temporary rehabilitation</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-motivo" id="chkOtrasCausas" value="Otras causas debidamente justificadas y documentadas"><span>Otras causas debidamente justificadas y documentadas<em>Other duly justified and documented reasons</em></span></label>
+          <div class="extra" id="x_otrasCausas"><input type="text" id="f_otrasCausas" placeholder="Especifica la causa · Please specify"></div>
+        </div>
+        <div class="field-err" id="e_motivo">Marca al menos una opción · Tick at least one option</div>
+      </div>
+
+      <!-- 3.3 -->
+      <div class="cl-block">
+        <div class="cl-title">3.3.- CARÁCTER TEMPORAL Y NO HABITUAL</div>
+        <div class="cl-text">El arrendatario reconoce expresamente que:
+          <ol>
+            <li>La habitación arrendada no constituirá su residencia habitual.</li>
+            <li>Conserva su domicilio habitual en la localidad indicada a continuación.</li>
+            <li>Dispone de vivienda alternativa una vez finalizado el contrato.</li>
+            <li>La estancia tiene un fin temporal y predeterminado.</li>
+            <li>No tiene intención de establecer su residencia permanente en Madrid.</li>
+          </ol>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Localidad de tu domicilio habitual · Your permanent home (city, country) *</label>
+          <input type="text" name="domicilio_habitual_localidad" id="f_domhab" placeholder="Ej.: Lyon, Francia">
+          <div class="field-err" id="e_domhab">Campo obligatorio</div>
+        </div>
+      </div>
+
+      <!-- 3.4 -->
+      <div class="cl-block">
+        <div class="cl-title">3.4.- DURACIÓN MÁXIMA Y FECHA DE FINALIZACIÓN *</div>
+        <div class="cl-text">1. El presente contrato tendrá una duración máxima de:</div>
+        <div class="cl-en">1. This contract will last a maximum of … days, between … and …</div>
+        <div class="field" style="max-width:140px">
+          <label>Días · Days</label>
+          <input type="number" id="f_dias" min="1" max="365" inputmode="numeric">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Entre el · From</label>
+            <input type="date" id="f_desde">
+          </div>
+          <div class="field">
+            <label>Y el · To</label>
+            <input type="date" id="f_hasta">
+          </div>
+        </div>
+        <div class="field-err" id="e_duracion" style="margin-top:-8px;margin-bottom:8px">Indica los días y las dos fechas (la final posterior a la inicial) · Enter days and both dates</div>
+        <div class="cl-text">
+          <ol start="2">
+            <li>La duración máxima no superará los 30 días consecutivos por estancia.</li>
+            <li>El arrendatario se compromete a desalojar la habitación en la fecha de finalización.</li>
+            <li>Cualquier prórroga deberá formalizarse mediante nuevo contrato con nueva justificación.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 3.5 -->
+      <div class="cl-block">
+        <div class="cl-title">3.5.- DOCUMENTACIÓN ACREDITATIVA *</div>
+        <div class="cl-text">El arrendatario se compromete a presentar, antes de la ocupación, documentación que acredite el motivo temporal declarado:</div>
+        <div class="cl-en">Tick the document(s) you will provide before check-in.</div>
+        <div class="opt-group" id="g_docum">
+          <label class="opt"><input type="checkbox" class="chk-docum" value="Contrato de trabajo temporal"><span>Contrato de trabajo temporal<em>Temporary employment contract</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-docum" value="Inscripción en curso o congreso"><span>Inscripción en curso o congreso<em>Course or congress enrolment</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-docum" value="Documentación médica"><span>Documentación médica<em>Medical documentation</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-docum" value="Justificantes de búsqueda de vivienda habitual"><span>Justificantes de búsqueda de vivienda habitual<em>Proof of search for a permanent home</em></span></label>
+          <label class="opt"><input type="checkbox" class="chk-docum" id="chkOtraDoc" value="Cualquier otra documentación relevante"><span>Cualquier otra documentación relevante<em>Any other relevant documentation</em></span></label>
+          <div class="extra" id="x_otraDoc"><input type="text" id="f_otraDoc" placeholder="Especifica el documento · Please specify"></div>
+        </div>
+        <div class="field-err" id="e_docum">Marca al menos una opción · Tick at least one option</div>
+      </div>
+
+      <!-- 3.6 -->
+      <div class="cl-block">
+        <div class="cl-title">3.6.- RENUNCIA EXPRESA A DERECHOS DE VIVIENDA HABITUAL</div>
+        <div class="cl-text">El arrendatario renuncia expresamente a:
+          <ol>
+            <li>Solicitar la prórroga obligatoria del contrato.</li>
+            <li>Reclamar derechos de adquisición preferente.</li>
+            <li>Solicitar la calificación del contrato como de vivienda habitual.</li>
+            <li>Cualquier otro derecho propio de los contratos de vivienda habitual.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 3.7 -->
+      <div class="cl-block">
+        <div class="cl-title">3.7.- ACEPTACIÓN EXPRESA *</div>
+        <div class="cl-text">El arrendatario declara conocer y aceptar expresamente que ESTE ES UN CONTRATO DE TEMPORADA, no de vivienda habitual, con todas las consecuencias legales que ello implica.</div>
+        <div class="cl-en">The tenant expressly acknowledges that THIS IS A SEASONAL CONTRACT, not a permanent-residence contract, with all the legal consequences this entails.</div>
+        <div class="opt-group" id="g_acept">
+          <label class="opt"><input type="radio" name="aceptacion_temporada" value="SI, acepto expresamente"><span><strong>SÍ, acepto expresamente</strong><em>YES, I expressly accept</em></span></label>
+          <label class="opt"><input type="radio" name="aceptacion_temporada" value="NO, no acepto expresamente"><span><strong>NO, no acepto expresamente</strong><em>NO, I do not accept</em></span></label>
+        </div>
+        <div class="field-err" id="e_acept">Selecciona SÍ o NO · Select YES or NO</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: FIRMA -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title">Tu firma · Your signature</div>
+    </div>
+    <div class="section-body">
+
+      <p style="font-size:.78rem;color:var(--tm);margin-bottom:12px;line-height:1.55">
+        Firma en el recuadro de abajo con tu dedo o stylus.<br>
+        <em>Sign in the box below with your finger or stylus.</em>
+      </p>
+
+      <div class="sig-wrap">
+        <div class="sig-label">
+          <span>Firma del viajero · Traveller signature *</span>
+          <button type="button" class="sig-clear" onclick="clearSig()">✕ Borrar</button>
+        </div>
+        <div class="sig-canvas-wrap" id="sigWrap">
+          <canvas id="sigPad"></canvas>
+          <div class="sig-hint" id="sigHint">
+            <div class="sig-hint-inner">
+              <div class="sig-hint-icon">✍️</div>
+              <div class="sig-hint-text">Firma aquí · Sign here</div>
+            </div>
+          </div>
+        </div>
+        <div class="field-err" id="e_sig" style="display:none">La firma es obligatoria</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: RGPD + CONSENTIMIENTO -->
+  <div class="card mt pad" style="padding:0">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title">Consentimiento · Consent</div>
+    </div>
+    <div class="section-body">
+
+      <div class="legal-box">
+        <p><strong>Información sobre protección de datos (RGPD)</strong><br>
+        Los datos facilitados son necesarios para el cumplimiento del <strong>Real Decreto 933/2021</strong> sobre registro de viajeros en establecimientos de hospedaje. Serán tratados por el titular del alojamiento y comunicados a las autoridades competentes (Ministerio del Interior). No serán cedidos a terceros con fines comerciales. Puede ejercer sus derechos en <strong>alquilerm18@gmail.com</strong>.<br><br>
+        <em>Data collected under RD 933/2021 for traveller registration purposes only.</em></p>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="chkRgpd" name="acepto_rgpd" value="Sí" required>
+        <label for="chkRgpd" id="lbl_rgpd">He leído y acepto el tratamiento de mis datos conforme al RGPD (UE) 2016/679. · <em>I have read and accept the data processing under GDPR.</em></label>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="chkVer" name="datos_verificados" value="Sí" required>
+        <label for="chkVer" id="lbl_ver">Confirmo que los datos facilitados son correctos y verídicos. · <em>I confirm that the information provided is accurate.</em></label>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="mt pad" style="padding-top:20px">
+    <button type="submit" class="btn-submit" id="btnSubmit">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">📤 Enviar registro firmado</span>
+    </button>
+    <p style="font-size:.7rem;color:var(--tm);text-align:center;margin-top:10px">
+      Recibirás una copia en tu email · You will receive a copy by email
+    </p>
+  </div>
+
+</form>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen" style="display:none">
+  <div class="success-icon">✓</div>
+  <div class="success-title">¡Registro enviado!</div>
+  <p class="success-msg" style="margin-bottom:4px">Gracias. Tu registro ha sido enviado correctamente.</p>
+  <p class="success-msg" style="font-style:italic;color:var(--tm);font-size:.82rem;margin-bottom:0">Thank you. Your registration has been successfully submitted.</p>
+
+  <div id="summaryBox" style="width:100%;max-width:480px;margin:24px auto 0;text-align:left"></div>
+
+  <button onclick="printSummary()" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:.92rem;font-weight:600;cursor:pointer;margin-top:24px;font-family:inherit;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(27,58,92,.25);letter-spacing:.02em">
+    <span style="font-size:1.1rem">🖨</span> Imprimir / Guardar PDF
+  </button>
+  <p style="font-size:.7rem;color:var(--tm);margin-top:18px;letter-spacing:.06em;text-transform:uppercase">Maiquez 18 · Madrid</p>
+</div>
+
+<script>
+// ── CANVAS SIGNATURE ──
+const canvas = document.getElementById('sigPad');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('sigWrap');
+const hint = document.getElementById('sigHint');
+let drawing = false, hasSig = false;
+
+function resizeCanvas(){
+  const rect = wrap.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = 130 * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = '130px';
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#1b3a5c';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return {x: src.clientX - rect.left, y: src.clientY - rect.top};
+}
+
+canvas.addEventListener('mousedown', e=>{drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);});
+canvas.addEventListener('mousemove', e=>{if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); startedSig();});
+canvas.addEventListener('mouseup', ()=>drawing=false);
+canvas.addEventListener('touchstart', e=>{e.preventDefault(); drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault(); if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); startedSig();},{passive:false});
+canvas.addEventListener('touchend', ()=>drawing=false);
+
+function startedSig(){
+  if(!hasSig){
+    hasSig=true;
+    hint.style.opacity='0';
+    wrap.classList.add('has-sig');
+    wrap.classList.remove('error');
+    document.getElementById('e_sig').style.display='none';
+  }
+}
+function clearSig(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hasSig=false;
+  hint.style.opacity='1';
+  wrap.classList.remove('has-sig');
+}
+
+// ── CLÁUSULA TEMPORAL: helpers ──
+function isoToDMY(s){if(!s)return'';const[y,m,d]=s.split('-');return`${d}-${m}-${y}`;}
+function dmyToIso(s){const m=(s||'').match(/(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);return m?`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`:'';}
+function checkedVals(cls){return Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);}
+function motivoTexto(){
+  return checkedVals('chk-motivo').map(v=>{
+    if(v.startsWith('Otras causas')){const x=document.getElementById('f_otrasCausas').value.trim();return x?`${v}: ${x}`:v;}
+    return v;}).join('; ');
+}
+function documTexto(){
+  return checkedVals('chk-docum').map(v=>{
+    if(v.startsWith('Cualquier otra')){const x=document.getElementById('f_otraDoc').value.trim();return x?`${v}: ${x}`:v;}
+    return v;}).join('; ');
+}
+function duracionTexto(){
+  const d=document.getElementById('f_dias').value.trim(),a=document.getElementById('f_desde').value,b=document.getElementById('f_hasta').value;
+  return `${d} días, entre el ${isoToDMY(a)} y el ${isoToDMY(b)}`;
+}
+// Resaltar opción marcada + mostrar campo "especificar"
+document.querySelectorAll('.opt input').forEach(inp=>{
+  inp.addEventListener('change',()=>{
+    if(inp.type==='radio'){document.querySelectorAll(`input[name="${inp.name}"]`).forEach(r=>r.closest('.opt').classList.toggle('checked',r.checked));}
+    else inp.closest('.opt').classList.toggle('checked',inp.checked);
+    document.getElementById('x_otrasCausas').style.display=document.getElementById('chkOtrasCausas').checked?'block':'none';
+    document.getElementById('x_otraDoc').style.display=document.getElementById('chkOtraDoc').checked?'block':'none';
+    updateProgress();
+  });
+});
+// Días calculados automáticamente a partir de las fechas (editable)
+function calcDias(){
+  const a=document.getElementById('f_desde').value,b=document.getElementById('f_hasta').value;
+  if(a&&b){const n=Math.round((new Date(b)-new Date(a))/86400000);if(n>0)document.getElementById('f_dias').value=n;}
+  updateProgress();
+}
+document.getElementById('f_desde').addEventListener('change',calcDias);
+document.getElementById('f_hasta').addEventListener('change',calcDias);
+// Pre-rellenar fechas de 3.4 con las de entrada/salida si están vacías
+document.getElementById('f_fent').addEventListener('change',()=>{const el=document.getElementById('f_desde');if(!el.value){el.value=dmyToIso(document.getElementById('f_fent').value);calcDias();}});
+document.getElementById('f_fsal').addEventListener('change',()=>{const el=document.getElementById('f_hasta');if(!el.value){el.value=dmyToIso(document.getElementById('f_fsal').value);calcDias();}});
+
+// ── PROGRESS ──
+const requiredIds=['f_nombre','f_ap1','f_sexo','f_tdoc','f_doc','f_nac','f_fnac','f_res','f_dir','f_loc','f_pais','f_email','f_fent','f_fsal','f_domhab','f_dias','f_desde','f_hasta'];
+function updateProgress(){
+  let filled=0;
+  requiredIds.forEach(id=>{const el=document.getElementById(id);if(el&&el.value.trim())filled++;});
+  if(hasSig)filled++;
+  if(document.getElementById('chkRgpd').checked)filled++;
+  if(document.getElementById('chkVer').checked)filled++;
+  if(checkedVals('chk-motivo').length)filled++;
+  if(checkedVals('chk-docum').length)filled++;
+  if(document.querySelector('input[name="aceptacion_temporada"]:checked'))filled++;
+  const total=requiredIds.length+6;
+  const pct=Math.round((filled/total)*100);
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pLabel').textContent=pct===100?'✓ Listo para enviar':`${pct}% completado`;
+}
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',updateProgress));
+document.querySelectorAll('input[type=checkbox]').forEach(el=>el.addEventListener('change',updateProgress));
+
+// ── VALIDATION ──
+function validateField(id, errId, check){
+  const el=document.getElementById(id);
+  const er=document.getElementById(errId);
+  if(!el||!er)return true;
+  const ok=check(el.value.trim());
+  el.classList.toggle('error',!ok);
+  er.style.display=ok?'none':'block';
+  return ok;
+}
+function validateAll(){
+  let ok=true;
+  const req=[
+    ['f_nombre','e_nombre',v=>v.length>0],
+    ['f_ap1','e_ap1',v=>v.length>0],
+    ['f_sexo','e_sexo',v=>v.length>0],
+    ['f_tdoc','e_tdoc',v=>v.length>0],
+    ['f_doc','e_doc',v=>v.length>0],
+    ['f_nac','e_nac',v=>v.length>0],
+    ['f_fnac','e_fnac',v=>/^\d{2}-\d{2}-\d{4}$/.test(v)],
+    ['f_res','e_res',v=>v.length>0],
+    ['f_dir','e_dir',v=>v.length>0],
+    ['f_loc','e_loc',v=>v.length>0],
+    ['f_pais','e_pais',v=>v.length>0],
+    ['f_email','e_email',v=>/^[^@]+@[^@]+\.[^@]+$/.test(v)],
+    ['f_fent','e_fent',v=>v.length>0],
+    ['f_fsal','e_fsal',v=>v.length>0],
+  ];
+  req.forEach(([id,er,fn])=>{ if(!validateField(id,er,fn))ok=false; });
+  // Cláusula temporal
+  if(!validateField('f_domhab','e_domhab',v=>v.length>0))ok=false;
+  function grp(gid,eid,cond){const g=document.getElementById(gid),e=document.getElementById(eid);g.classList.toggle('error',!cond);e.style.display=cond?'none':'block';if(!cond)ok=false;}
+  grp('g_motivo','e_motivo',checkedVals('chk-motivo').length>0);
+  grp('g_docum','e_docum',checkedVals('chk-docum').length>0);
+  grp('g_acept','e_acept',!!document.querySelector('input[name="aceptacion_temporada"]:checked'));
+  [['chkOtrasCausas','f_otrasCausas'],['chkOtraDoc','f_otraDoc']].forEach(([c,f])=>{
+    const need=document.getElementById(c).checked,el=document.getElementById(f),bad=need&&!el.value.trim();
+    el.classList.toggle('error',bad);if(bad)ok=false;});
+  {
+    const d=+document.getElementById('f_dias').value,a=document.getElementById('f_desde').value,b=document.getElementById('f_hasta').value;
+    const good=d>0&&a&&b&&b>a;
+    ['f_dias','f_desde','f_hasta'].forEach(id=>document.getElementById(id).classList.toggle('error',!good));
+    document.getElementById('e_duracion').style.display=good?'none':'block';
+    if(!good)ok=false;
+  }
+  // Signature
+  if(!hasSig){
+    wrap.classList.add('error');
+    document.getElementById('e_sig').style.display='block';
+    ok=false;
+  }
+  // Checkboxes
+  ['chkRgpd','chkVer'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    const lbl=document.getElementById(i===0?'lbl_rgpd':'lbl_ver');
+    if(!el.checked){lbl.classList.add('error-text');ok=false;}
+    else lbl.classList.remove('error-text');
+  });
+  return ok;
+}
+
+// ── SUBMIT ──
+document.getElementById('regForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(!validateAll()){
+    document.querySelector('.error, .error-text, [id^=e_]:not([style*="none"])')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  // Firma y timestamp
+  document.getElementById('firmaHidden').value = '✓ Firmado digitalmente el ' + new Date().toLocaleString('es-ES');
+  // Timestamp de envío
+  const ts = document.createElement('input');
+  ts.type='hidden'; ts.name='fecha_envio'; ts.value=new Date().toLocaleString('es-ES');
+  this.appendChild(ts);
+  // Cláusula de justificación temporal → campos de texto únicos
+  document.getElementById('h_motivo').value=motivoTexto();
+  document.getElementById('h_docum').value=documTexto();
+  document.getElementById('h_duracion').value=duracionTexto();
+
+  // Submit nativo — FormSubmit redirige a _next tras el envío
+  const btn=document.getElementById('btnSubmit');
+  const sp=document.getElementById('spinner');
+  const bt=document.getElementById('btnText');
+  btn.disabled=true; sp.style.display='block'; bt.textContent='Enviando…';
+
+  const formData=new FormData(this);
+  const resumenData={};
+  formData.forEach((v,k)=>{ resumenData[k]=v; });
+
+  fetch('https://script.google.com/macros/s/AKfycbx_0W6kdXy6uyq9QbeUenfPTadKRvj-GVss6Ceju1n4ts03-lQIP7pNRUPIk78Iq8Vffw/exec',{
+    method:'POST',
+    body:formData,
+    mode:'no-cors'
+  })
+  .then(()=>{
+    document.getElementById('regForm').style.display='none';
+    const ss=document.getElementById('successScreen');
+    ss.style.display='flex'; ss.style.flexDirection='column'; ss.style.alignItems='center';
+    const secciones=[
+      {titulo:'Datos personales', campos:[
+        ['Nombre','nombre'],['Primer apellido','primer_apellido'],['Segundo apellido','segundo_apellido'],
+        ['Sexo','sexo'],['Fecha de nacimiento','fecha_nacimiento'],['Nacionalidad','nacionalidad'],
+        ['Tipo de documento','tipo_documento'],['Nº de documento','numero_documento']
+      ]},
+      {titulo:'Residencia y contacto', campos:[
+        ['Dirección','direccion'],['Localidad','localidad'],['País','pais'],['Residencia habitual','residencia'],
+        ['Teléfono móvil','telefono_movil'],['Email','email_viajero']
+      ]},
+      {titulo:'Estancia', campos:[
+        ['Fecha de entrada','fecha_entrada'],['Fecha de salida','fecha_salida'],['Nº de referencia','referencia']
+      ]},
+      {titulo:'Justificación temporal (contrato de temporada)', campos:[
+        ['3.2 Motivo causal','motivo_temporal'],['3.3 Domicilio habitual en','domicilio_habitual_localidad'],
+        ['3.4 Duración máxima','duracion_maxima'],['3.5 Documentación acreditativa','documentacion_acreditativa'],
+        ['3.7 Aceptación expresa','aceptacion_temporada']
+      ]}
+    ];
+
+    let html='';
+    secciones.forEach(sec=>{
+      const filas=sec.campos.filter(([,key])=>resumenData[key]);
+      if(!filas.length) return;
+      html+=`<div style="margin-bottom:18px">`;
+      html+=`<div style="font-family:'Playfair Display',serif;font-size:.95rem;color:var(--navy);background:linear-gradient(90deg,var(--light),transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid var(--accent)">${sec.titulo}</div>`;
+      html+=`<div style="border:1px solid var(--br);border-top:none;border-radius:0 0 8px 8px;overflow:hidden">`;
+      filas.forEach(([label,key],i)=>{
+        const val=resumenData[key];
+        const bg=i%2===0?'#fff':'var(--light)';
+        html+=`<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 12px;background:${bg};font-size:.82rem">
+          <span style="color:var(--tm);font-weight:600">${label}</span>
+          <span style="color:var(--tx);text-align:right">${val}</span>
+        </div>`;
+      });
+      html+=`</div></div>`;
+    });
+
+    // Firma — bloque destacado al final
+    if(resumenData['firma_digital']){
+      html+=`<div style="display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;margin-top:4px">
+        <span style="font-size:1.2rem;color:var(--gn)">✓</span>
+        <div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--navy)">Documento firmado digitalmente</div>
+          <div style="font-size:.72rem;color:var(--tm)">${resumenData['fecha_envio']||''}</div>
+        </div>
+      </div>`;
+    }
+
+    document.getElementById('summaryBox').innerHTML=html;
+  })
+  .catch(err=>{
+    btn.disabled=false; sp.style.display='none'; bt.textContent='Enviar registro';
+    alert('Error al enviar. Por favor inténtalo de nuevo.');
+    console.error(err);
+  });
+});
+
+function printSummary(){
+  const box=document.getElementById('summaryBox');
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registro de Viajeros · Maiquez 18</title>'
+  +'<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
+  +'<style>'
+  +'*{box-sizing:border-box;margin:0;padding:0}'
+  +'body{font-family:"DM Sans",Arial,sans-serif;color:#1a2d42;padding:0;background:#fff}'
+  +'.header{background:#1b3a5c;color:#fff;padding:28px 32px;text-align:center;position:relative;overflow:hidden}'
+  +'.header::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(200,168,75,.08) 0,rgba(200,168,75,.08) 1px,transparent 0,transparent 12px)}'
+  +'.header-inner{position:relative;z-index:1}'
+  +'.brand{font-family:"Playfair Display",serif;font-size:1.5rem;letter-spacing:.02em;margin-bottom:4px}'
+  +'.tagline{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#c8a84b}'
+  +'.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:.68rem;color:rgba(255,255,255,.85);margin-top:12px}'
+  +'.badge-dot{width:6px;height:6px;border-radius:50%;background:#4ade80}'
+  +'.content{padding:24px 32px}'
+  +'.owner-line{font-size:.74rem;color:#6b7f96;text-align:center;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #e8eff7}'
+  +'.section-title{font-family:"Playfair Display",serif;font-size:.92rem;color:#1b3a5c;background:linear-gradient(90deg,#f0f7fd,transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid #c8a84b;margin-top:16px}'
+  +'.section-body{border:1px solid #d0dce8;border-top:none;border-radius:0 0 8px 8px;overflow:hidden}'
+  +'.row{display:flex;justify-content:space-between;gap:14px;padding:8px 12px;font-size:.8rem}'
+  +'.row:nth-child(even){background:#f5f7fa}'
+  +'.row .lbl{color:#6b7f96;font-weight:600}'
+  +'.row .val{color:#1a2d42;text-align:right}'
+  +'.sig-box{display:flex;align-items:center;gap:10px;background:#f0f7fd;border:1px solid #c8a84b;border-radius:8px;padding:12px 16px;margin-top:18px}'
+  +'.sig-check{font-size:1.3rem;color:#1a7a52}'
+  +'.sig-title{font-size:.8rem;font-weight:700;color:#1b3a5c}'
+  +'.sig-date{font-size:.72rem;color:#6b7f96}'
+  +'.foot{font-size:.68rem;color:#a8b8c8;text-align:center;margin-top:24px;border-top:1px solid #e8eff7;padding-top:12px;line-height:1.6}'
+  +'@media print{@page{margin:0}.header{padding:24px 32px}}'
+  +'</style></head><body>'
+  +'<div class="header"><div class="header-inner">'
+  +'<div class="brand">Maiquez 18</div>'
+  +'<div class="tagline">Registro de Viajeros · Madrid</div>'
+  +'<div class="badge"><span class="badge-dot"></span>Formulario oficial · RD 933/2021</div>'
+  +'</div></div>'
+  +'<div class="content">'
+  +'<div class="owner-line">Calle Maiquez, 18 · 28009 Madrid &nbsp;·&nbsp; Titular: Gonzalo Arroyo Fernández &nbsp;·&nbsp; DNI 05231837-G</div>'
+  +box.innerHTML
+  +'<div class="foot">Documento confidencial · Datos tratados conforme al RGPD (UE) 2016/679<br>'
+  +'Ley Orgánica 4/2015 · Real Decreto 933/2021 · Generado el '+new Date().toLocaleString('es-ES')+'</div>'
+  +'</div>'
+  +'<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt>'
+  +'</body></html>');
+  w.document.close();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
