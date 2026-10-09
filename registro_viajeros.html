@@ -358,6 +358,8 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
   <input type="hidden" name="motivo_temporal" id="h_motivo" value="">
   <input type="hidden" name="documentacion_acreditativa" id="h_docum" value="">
   <input type="hidden" name="duracion_maxima" id="h_duracion" value="">
+  <input type="hidden" name="campos_json" id="h_campos" value="">
+  <input type="hidden" name="documento_html" id="h_documento" value="">
   <div class="card mt pad" style="padding:0">
     <div class="section-head">
       <div class="section-num">4</div>
@@ -382,6 +384,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
         <div class="cl-text">El arrendatario/huésped declara y justifica expresamente que necesita alojamiento temporal en Madrid por los siguientes motivos causales (marcar la que proceda):</div>
         <div class="cl-en">Tick the reason(s) for your temporary stay in Madrid.</div>
         <div class="opt-group" id="g_motivo">
+          <label class="opt"><input type="checkbox" class="chk-motivo" value="Turismo"><span>Turismo<em>Tourism</em></span></label>
           <label class="opt"><input type="checkbox" class="chk-motivo" value="Estancia por motivos laborales/profesionales de duración determinada"><span>Estancia por motivos laborales/profesionales de duración determinada<em>Work / professional stay of fixed duration</em></span></label>
           <label class="opt"><input type="checkbox" class="chk-motivo" value="Formación académica, cursos o especializaciones"><span>Formación académica, cursos o especializaciones<em>Academic training, courses or specialisation</em></span></label>
           <label class="opt"><input type="checkbox" class="chk-motivo" value="Trámites administrativos o gestiones puntuales en la capital"><span>Trámites administrativos o gestiones puntuales en la capital<em>Administrative procedures or specific errands in Madrid</em></span></label>
@@ -569,7 +572,7 @@ canvas#sigPad{display:block;touch-action:none;cursor:crosshair;width:100%;height
   <div id="summaryBox" style="width:100%;max-width:480px;margin:24px auto 0;text-align:left"></div>
 
   <button onclick="printSummary()" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:.92rem;font-weight:600;cursor:pointer;margin-top:24px;font-family:inherit;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(27,58,92,.25);letter-spacing:.02em">
-    <span style="font-size:1.1rem">🖨</span> Imprimir / Guardar PDF
+    <span style="font-size:1.1rem">🖨</span> Imprimir / Guardar PDF del registro completo
   </button>
   <p style="font-size:.7rem;color:var(--tm);margin-top:18px;letter-spacing:.06em;text-transform:uppercase">Maiquez 18 · Madrid</p>
 </div>
@@ -757,6 +760,114 @@ function validateAll(){
   return ok;
 }
 
+// ── DOCUMENTO COMPLETO (lo que ve y acepta el huésped) ──
+function escH(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function valOf(name){const el=document.querySelector(`[name="${name}"]`);if(!el)return'';if(el.tagName==='SELECT'){const o=el.options[el.selectedIndex];return o&&o.value?o.text:'';}return el.value.trim();}
+function firmaPNG(){
+  // Copia de la firma reducida, fondo blanco
+  const w=460,h=115,c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(canvas,0,0,w,h);
+  return c.toDataURL('image/png');
+}
+function boxH(on){return `<span class="bx">${on?'X':'&nbsp;'}</span>`;}
+function optListH(cls,extraId,extraStart){
+  return Array.from(document.querySelectorAll('.'+cls)).map(c=>{
+    let t=escH(c.value);
+    if(c.checked&&c.value.startsWith(extraStart)){const x=document.getElementById(extraId).value.trim();if(x)t+=`: <b>${escH(x)}</b>`;}
+    return `<tr><td class="cb">${boxH(c.checked)}</td><td>${t}</td></tr>`;}).join('');
+}
+function filaH(l,v){return `<tr><td class="l">${escH(l)}</td><td class="v">${escH(v)||'—'}</td></tr>`;}
+function buildCampos(){
+  return [
+    ['Nombre',valOf('nombre')],['Primer apellido',valOf('primer_apellido')],['Segundo apellido',valOf('segundo_apellido')],
+    ['Sexo',valOf('sexo')],['Tipo de documento',valOf('tipo_documento')],['Nº de documento',valOf('numero_documento')],
+    ['Nacionalidad',valOf('nacionalidad')],['Fecha de nacimiento',valOf('fecha_nacimiento')],
+    ['Residencia habitual',valOf('residencia')],['Dirección',valOf('direccion')],['Localidad',valOf('localidad')],['País',valOf('pais')],
+    ['Nº de viajeros',valOf('num_viajeros')],['Teléfono móvil',valOf('telefono_movil')],['Email',valOf('email_viajero')],['Parentesco',valOf('parentesco')],
+    ['Fecha de entrada',valOf('fecha_entrada')],['Fecha de salida',valOf('fecha_salida')],['Nº de referencia',valOf('referencia')],['Tipo de pago',valOf('tipo_pago')],
+    ['3.2 Motivo causal',motivoTexto()],['3.3 Domicilio habitual en',valOf('domicilio_habitual_localidad')],
+    ['3.4 Duración máxima',duracionTexto()],['3.5 Documentación acreditativa',documTexto()],
+    ['3.7 Aceptación expresa',(document.querySelector('input[name="aceptacion_temporada"]:checked')||{}).value||''],
+    ['Acepta RGPD',document.getElementById('chkRgpd').checked?'Sí':'No'],['Datos verificados',document.getElementById('chkVer').checked?'Sí':'No'],
+    ['Firma',document.getElementById('firmaHidden').value],['Fecha y hora de envío',(document.querySelector('[name="fecha_envio"]')||{}).value||'']
+  ];
+}
+function buildDocumento(){
+  const acept=(document.querySelector('input[name="aceptacion_temporada"]:checked')||{}).value||'';
+  const dias=document.getElementById('f_dias').value.trim(),desde=document.getElementById('f_desde').value.trim(),hasta=document.getElementById('f_hasta').value.trim();
+  const envio=(document.querySelector('[name="fecha_envio"]')||{}).value||new Date().toLocaleString('es-ES');
+  const nom=[valOf('nombre'),valOf('primer_apellido'),valOf('segundo_apellido')].filter(Boolean).join(' ');
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Registro de Viajeros · Maiquez 18 · ${escH(nom)}</title><style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;color:#1a2d42;margin:0;padding:18px 26px;line-height:1.4}
+.hd{border-top:6px solid #1b3a5c;border-bottom:2px solid #c8a84b;padding:10px 18px 12px;text-align:center}
+.hd .b{font-size:18pt;font-weight:bold;color:#1b3a5c;letter-spacing:.5px}.hd .t{font-size:9pt;color:#9a7b22;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+.hd .s{font-size:8pt;color:#5a6f86;margin-top:5px}
+h2{font-size:10.5pt;background:#e8f1fb;color:#1b3a5c;border-bottom:2px solid #c8a84b;padding:5px 8px;margin:16px 0 6px}
+h3{font-size:9.5pt;color:#1b3a5c;margin:12px 0 4px}
+table{border-collapse:collapse;width:100%}
+td{vertical-align:top;padding:3px 6px}
+td.l{width:38%;color:#5a6f86;font-weight:bold;border-bottom:1px solid #e3eaf2}td.v{border-bottom:1px solid #e3eaf2}
+td.cb{width:22px;padding-right:0}
+.bx{display:inline-block;width:13px;height:13px;border:1.4px solid #1b3a5c;text-align:center;font-size:9pt;line-height:13px;font-weight:bold}
+p{margin:4px 0}ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}
+.fill{font-weight:bold;border-bottom:1px solid #1b3a5c;padding:0 3px}
+.sig{border:1px solid #c8a84b;padding:8px;margin-top:6px}
+.sig img{width:300px;height:75px;border-bottom:1px solid #999}
+.small{font-size:8.5pt;color:#5a6f86}
+.foot{font-size:7.5pt;color:#8a9bb0;text-align:center;border-top:1px solid #dde;margin-top:18px;padding-top:6px}
+</style></head><body>
+<div class="hd"><div class="b">Maiquez 18</div><div class="t">Registro de Viajeros · Madrid</div><div class="s">Formulario oficial · Ley Orgánica 4/2015 · Real Decreto 933/2021</div></div>
+
+<h2>1 · Datos del inmueble y del titular</h2>
+<table>${filaH('Dirección','Calle Maiquez, 18 · 28009 Madrid')}${filaH('Titular','Gonzalo Arroyo Fernández')}${filaH('Documento del titular','DNI 05231837-G')}${filaH('Teléfono','+34 644 30 51 41')}${filaH('Email','alquilerm18@gmail.com')}</table>
+
+<h2>2 · Datos personales del viajero</h2>
+<table>${filaH('Nombre',valOf('nombre'))}${filaH('Primer apellido',valOf('primer_apellido'))}${filaH('Segundo apellido',valOf('segundo_apellido'))}${filaH('Sexo',valOf('sexo'))}${filaH('Tipo de documento',valOf('tipo_documento'))}${filaH('Nº de documento',valOf('numero_documento'))}${filaH('Nacionalidad',valOf('nacionalidad'))}${filaH('Fecha de nacimiento',valOf('fecha_nacimiento'))}${filaH('Lugar de residencia habitual',valOf('residencia'))}${filaH('Dirección completa',valOf('direccion'))}${filaH('Localidad',valOf('localidad'))}${filaH('País',valOf('pais'))}${filaH('Nº de viajeros',valOf('num_viajeros'))}${filaH('Teléfono móvil',valOf('telefono_movil'))}${filaH('Email',valOf('email_viajero'))}${filaH('Parentesco entre viajeros (si hay menores)',valOf('parentesco'))}</table>
+
+<h2>3 · Datos de la estancia</h2>
+<table>${filaH('Fecha de entrada',valOf('fecha_entrada'))}${filaH('Fecha de salida',valOf('fecha_salida'))}${filaH('Nº de referencia (Airbnb)',valOf('referencia'))}${filaH('Tipo de pago',valOf('tipo_pago'))}</table>
+
+<h2>4 · Cláusula de justificación temporal para arrendamiento de habitación en régimen de temporada</h2>
+<h3>3.1.- DECLARACIÓN PREVIA</h3>
+<p>El presente contrato se suscribe al amparo del artículo 5.1 de la Ley de Arrendamientos Urbanos, y tiene por objeto el arrendamiento de una habitación en régimen de temporada, no constituyendo contrato de arrendamiento de vivienda habitual, tal y como se especifica y justifica a continuación.</p>
+<h3>3.2.- MOTIVO CAUSAL Y NECESIDAD TEMPORAL</h3>
+<p>El arrendatario/huésped declara y justifica expresamente que necesita alojamiento temporal en Madrid por los siguientes motivos causales (marcar la que proceda):</p>
+<table>${optListH('chk-motivo','f_otrasCausas','Otras causas')}</table>
+<h3>3.3.- CARÁCTER TEMPORAL Y NO HABITUAL</h3>
+<p>El arrendatario reconoce expresamente que:</p>
+<ol><li>La habitación arrendada no constituirá su residencia habitual.</li>
+<li>Conserva su domicilio habitual en <span class="fill">${escH(valOf('domicilio_habitual_localidad'))}</span>.</li>
+<li>Dispone de vivienda alternativa una vez finalizado el contrato.</li>
+<li>La estancia tiene un fin temporal y predeterminado.</li>
+<li>No tiene intención de establecer su residencia permanente en Madrid.</li></ol>
+<h3>3.4.- DURACIÓN MÁXIMA Y FECHA DE FINALIZACIÓN</h3>
+<ol><li>El presente contrato tendrá una duración máxima de <span class="fill">${escH(dias)}</span> días, entre el <span class="fill">${escH(desde)}</span> y el <span class="fill">${escH(hasta)}</span> (rellenado por el huésped).</li>
+<li>La duración máxima no superará los 30 días consecutivos por estancia.</li>
+<li>El arrendatario se compromete a desalojar la habitación en la fecha de finalización.</li>
+<li>Cualquier prórroga deberá formalizarse mediante nuevo contrato con nueva justificación.</li></ol>
+<h3>3.5.- DOCUMENTACIÓN ACREDITATIVA</h3>
+<p>El arrendatario se compromete a presentar, antes de la ocupación, documentación que acredite el motivo temporal declarado (rellenado por el huésped):</p>
+<table>${optListH('chk-docum','f_otraDoc','Cualquier otra')}</table>
+<h3>3.6.- RENUNCIA EXPRESA A DERECHOS DE VIVIENDA HABITUAL</h3>
+<p>El arrendatario renuncia expresamente a:</p>
+<ol><li>Solicitar la prórroga obligatoria del contrato.</li><li>Reclamar derechos de adquisición preferente.</li><li>Solicitar la calificación del contrato como de vivienda habitual.</li><li>Cualquier otro derecho propio de los contratos de vivienda habitual.</li></ol>
+<h3>3.7.- ACEPTACIÓN EXPRESA</h3>
+<p>El arrendatario declara conocer y aceptar expresamente que ESTE ES UN CONTRATO DE TEMPORADA, no de vivienda habitual, con todas las consecuencias legales que ello implica.</p>
+<table><tr><td class="cb">${boxH(acept.startsWith('SI'))}</td><td>SÍ, acepto expresamente</td></tr><tr><td class="cb">${boxH(acept.startsWith('NO'))}</td><td>NO, no acepto expresamente</td></tr></table>
+
+<h2>5 · Firma del viajero</h2>
+<div class="sig"><img src="${firmaPNG()}" alt="Firma"><p class="small">Firmado digitalmente por <b>${escH(nom)}</b> el ${escH(envio)}</p></div>
+
+<h2>6 · Consentimiento</h2>
+<p class="small">Los datos facilitados son necesarios para el cumplimiento del Real Decreto 933/2021 sobre registro de viajeros en establecimientos de hospedaje. Serán tratados por el titular del alojamiento y comunicados a las autoridades competentes (Ministerio del Interior). No serán cedidos a terceros con fines comerciales. Puede ejercer sus derechos en alquilerm18@gmail.com.</p>
+<table><tr><td class="cb">${boxH(document.getElementById('chkRgpd').checked)}</td><td>He leído y acepto el tratamiento de mis datos conforme al RGPD (UE) 2016/679.</td></tr>
+<tr><td class="cb">${boxH(document.getElementById('chkVer').checked)}</td><td>Confirmo que los datos facilitados son correctos y verídicos.</td></tr></table>
+
+<div class="foot">Documento cumplimentado y firmado por el viajero en https://alquilerm18.github.io/maiquez18/registro_viajeros.html · Enviado el ${escH(envio)}<br>Documento confidencial · Datos tratados conforme al RGPD (UE) 2016/679</div>
+</body></html>`;
+}
+
+let documentoFinal='';
 // ── SUBMIT ──
 document.getElementById('regForm').addEventListener('submit', async function(e){
   e.preventDefault();
@@ -774,6 +885,10 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   document.getElementById('h_motivo').value=motivoTexto();
   document.getElementById('h_docum').value=documTexto();
   document.getElementById('h_duracion').value=duracionTexto();
+  // Documento completo (PDF) y lista ordenada de campos para el email
+  document.getElementById('h_campos').value=JSON.stringify(buildCampos());
+  documentoFinal=buildDocumento();
+  document.getElementById('h_documento').value=documentoFinal;
 
   // Submit nativo — FormSubmit redirige a _next tras el envío
   const btn=document.getElementById('btnSubmit');
@@ -785,7 +900,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
   const resumenData={};
   formData.forEach((v,k)=>{ resumenData[k]=v; });
 
-  fetch('https://script.google.com/macros/s/AKfycbx_0W6kdXy6uyq9QbeUenfPTadKRvj-GVss6Ceju1n4ts03-lQIP7pNRUPIk78Iq8Vffw/exec',{
+  fetch('https://script.google.com/macros/s/AKfycbyQIUWZLhpPVP8rQULMChPUJQIp69hEKGtjcgVl9LJcQx77644hNqb8-GEiSDAGBRxbig/exec',{
     method:'POST',
     body:formData,
     mode:'no-cors'
@@ -853,48 +968,8 @@ document.getElementById('regForm').addEventListener('submit', async function(e){
 });
 
 function printSummary(){
-  const box=document.getElementById('summaryBox');
   const w=window.open('','_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registro de Viajeros · Maiquez 18</title>'
-  +'<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
-  +'<style>'
-  +'*{box-sizing:border-box;margin:0;padding:0}'
-  +'body{font-family:"DM Sans",Arial,sans-serif;color:#1a2d42;padding:0;background:#fff}'
-  +'.header{background:#1b3a5c;color:#fff;padding:28px 32px;text-align:center;position:relative;overflow:hidden}'
-  +'.header::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(200,168,75,.08) 0,rgba(200,168,75,.08) 1px,transparent 0,transparent 12px)}'
-  +'.header-inner{position:relative;z-index:1}'
-  +'.brand{font-family:"Playfair Display",serif;font-size:1.5rem;letter-spacing:.02em;margin-bottom:4px}'
-  +'.tagline{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#c8a84b}'
-  +'.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:.68rem;color:rgba(255,255,255,.85);margin-top:12px}'
-  +'.badge-dot{width:6px;height:6px;border-radius:50%;background:#4ade80}'
-  +'.content{padding:24px 32px}'
-  +'.owner-line{font-size:.74rem;color:#6b7f96;text-align:center;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #e8eff7}'
-  +'.section-title{font-family:"Playfair Display",serif;font-size:.92rem;color:#1b3a5c;background:linear-gradient(90deg,#f0f7fd,transparent);padding:7px 12px;border-radius:8px 8px 0 0;border-bottom:2px solid #c8a84b;margin-top:16px}'
-  +'.section-body{border:1px solid #d0dce8;border-top:none;border-radius:0 0 8px 8px;overflow:hidden}'
-  +'.row{display:flex;justify-content:space-between;gap:14px;padding:8px 12px;font-size:.8rem}'
-  +'.row:nth-child(even){background:#f5f7fa}'
-  +'.row .lbl{color:#6b7f96;font-weight:600}'
-  +'.row .val{color:#1a2d42;text-align:right}'
-  +'.sig-box{display:flex;align-items:center;gap:10px;background:#f0f7fd;border:1px solid #c8a84b;border-radius:8px;padding:12px 16px;margin-top:18px}'
-  +'.sig-check{font-size:1.3rem;color:#1a7a52}'
-  +'.sig-title{font-size:.8rem;font-weight:700;color:#1b3a5c}'
-  +'.sig-date{font-size:.72rem;color:#6b7f96}'
-  +'.foot{font-size:.68rem;color:#a8b8c8;text-align:center;margin-top:24px;border-top:1px solid #e8eff7;padding-top:12px;line-height:1.6}'
-  +'@media print{@page{margin:0}.header{padding:24px 32px}}'
-  +'</style></head><body>'
-  +'<div class="header"><div class="header-inner">'
-  +'<div class="brand">Maiquez 18</div>'
-  +'<div class="tagline">Registro de Viajeros · Madrid</div>'
-  +'<div class="badge"><span class="badge-dot"></span>Formulario oficial · RD 933/2021</div>'
-  +'</div></div>'
-  +'<div class="content">'
-  +'<div class="owner-line">Calle Maiquez, 18 · 28009 Madrid &nbsp;·&nbsp; Titular: Gonzalo Arroyo Fernández &nbsp;·&nbsp; DNI 05231837-G</div>'
-  +box.innerHTML
-  +'<div class="foot">Documento confidencial · Datos tratados conforme al RGPD (UE) 2016/679<br>'
-  +'Ley Orgánica 4/2015 · Real Decreto 933/2021 · Generado el '+new Date().toLocaleString('es-ES')+'</div>'
-  +'</div>'
-  +'<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt>'
-  +'</body></html>');
+  w.document.write(documentoFinal.replace('</body>','<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt></body>'));
   w.document.close();
 }
 
